@@ -163,19 +163,36 @@ const CV_DATA = {
 // ==========================================
 
 // Efecto de máquina de escribir para el título
-const Typewriter = ({ text, delay = 100 }) => {
+const Typewriter = ({ text, delay = 100, eraseDelay = 50, pauseTime = 2000 }) => {
   const [currentText, setCurrentText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setCurrentText(prevText => prevText + text[currentIndex]);
-        setCurrentIndex(prevIndex => prevIndex + 1);
+    let timeout;
+
+    if (!isDeleting && currentIndex < text.length) {
+      // Escribiendo letra por letra
+      timeout = setTimeout(() => {
+        setCurrentText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
       }, delay);
-      return () => clearTimeout(timeout);
+    } else if (isDeleting && currentIndex > 0) {
+      // Borrando en retroceso
+      timeout = setTimeout(() => {
+        setCurrentText(prev => prev.slice(0, -1));
+        setCurrentIndex(prev => prev - 1);
+      }, eraseDelay);
+    } else if (!isDeleting && currentIndex === text.length) {
+      // Pausa cuando termina de escribir
+      timeout = setTimeout(() => setIsDeleting(true), pauseTime);
+    } else if (isDeleting && currentIndex === 0) {
+      // Pausa breve antes de volver a escribir
+      timeout = setTimeout(() => setIsDeleting(false), pauseTime / 2);
     }
-  }, [currentIndex, delay, text]);
+
+    return () => clearTimeout(timeout);
+  }, [currentIndex, isDeleting, delay, eraseDelay, pauseTime, text]);
 
   return (
     <span className="inline-block">
@@ -392,7 +409,7 @@ export default function App() {
             <h1 className="text-5xl md:text-7xl font-bold text-slate-100 mb-4 tracking-tight">
               {CV_DATA.personal.name}.
             </h1>
-            <h2 className="text-4xl md:text-6xl font-bold text-slate-400 mb-8">
+            <h2 className="text-4xl md:text-6xl font-ligth text-white font-mono mb-8">
               <Typewriter text={`Soy ${CV_DATA.personal.role}.`} delay={80} />
             </h2>
             <p className="text-lg text-slate-400 max-w-2xl mb-12 leading-relaxed">
