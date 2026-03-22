@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Github, 
   Linkedin, 
@@ -159,6 +159,39 @@ const Typewriter = ({ text, delay = 100 }) => {
   );
 };
 
+// Componente para animaciones de entrada fluidas (Alto rendimiento)
+const FadeInSection = ({ children, delay = 0, className = "" }) => {
+  const [isVisible, setVisible] = useState(false);
+  const domRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    const currentRef = domRef.current;
+    if (currentRef) observer.observe(currentRef);
+    return () => { if (currentRef) observer.unobserve(currentRef); };
+  }, []);
+
+  return (
+    <div
+      ref={domRef}
+      className={`transition-all duration-1000 ease-out ${
+        isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'
+      } ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
 // Modal de Proyectos con Carrusel
 const ProjectModal = ({ project, onClose }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -244,7 +277,7 @@ export default function App() {
       setIsScrolled(window.scrollY > 50);
       
       // Lógica simple para resaltar el menú activo basado en el scroll
-      const sections = ['home', 'about', 'experience', 'projects'];
+      const sections = ['home', 'about', 'experience', 'education', 'projects'];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -278,13 +311,13 @@ export default function App() {
             {CV_DATA.personal.name.split(' ')[0]}<span className="text-slate-200">.dev</span>
           </div>
           <div className="hidden md:flex space-x-8 text-sm font-medium">
-            {['home', 'about', 'experience', 'projects'].map((item) => (
+            {['home', 'about', 'experience', 'education', 'projects'].map((item) => (
               <button 
                 key={item}
                 onClick={() => scrollTo(item)}
                 className={`capitalize transition-colors hover:text-cyan-400 ${activeSection === item ? 'text-cyan-400' : 'text-slate-400'}`}
               >
-                {item === 'home' ? 'Inicio' : item === 'about' ? 'Sobre mí' : item === 'experience' ? 'Experiencia' : 'Proyectos'}
+                {item === 'home' ? 'Inicio' : item === 'about' ? 'Sobre mí' : item === 'experience' ? 'Experiencia' : item === 'education' ? 'Educación' : 'Proyectos'}
               </button>
             ))}
           </div>
@@ -295,28 +328,30 @@ export default function App() {
         
         {/* 🌟 SECCIÓN: INICIO (HERO) */}
         <section id="home" className="min-h-[80vh] flex flex-col justify-center items-start pt-10">
-          <p className="text-cyan-400 font-mono mb-4 pl-1">Hola, mi nombre es</p>
-          <h1 className="text-5xl md:text-7xl font-bold text-slate-100 mb-4 tracking-tight">
-            {CV_DATA.personal.name}.
-          </h1>
-          <h2 className="text-4xl md:text-6xl font-bold text-slate-400 mb-8">
-            <Typewriter text={`Soy ${CV_DATA.personal.role}.`} delay={80} />
-          </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mb-12 leading-relaxed">
-            {CV_DATA.personal.about.substring(0, 150)}... 
-          </p>
-          
-          <div className="flex gap-4 mb-16">
-            <a href={CV_DATA.personal.github} target="_blank" rel="noreferrer" className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1">
-              <Github className="w-6 h-6" />
-            </a>
-            <a href={CV_DATA.personal.linkedin} target="_blank" rel="noreferrer" className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1">
-              <Linkedin className="w-6 h-6" />
-            </a>
-            <a href={`mailto:${CV_DATA.personal.email}`} className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1">
-              <Mail className="w-6 h-6" />
-            </a>
-          </div>
+          <FadeInSection>
+            <p className="text-cyan-400 font-mono mb-4 pl-1">Hola, mi nombre es</p>
+            <h1 className="text-5xl md:text-7xl font-bold text-slate-100 mb-4 tracking-tight">
+              {CV_DATA.personal.name}.
+            </h1>
+            <h2 className="text-4xl md:text-6xl font-bold text-slate-400 mb-8">
+              <Typewriter text={`Soy ${CV_DATA.personal.role}.`} delay={80} />
+            </h2>
+            <p className="text-lg text-slate-400 max-w-2xl mb-12 leading-relaxed">
+              {CV_DATA.personal.about.substring(0, 150)}... 
+            </p>
+            
+            <div className="flex gap-4 mb-16">
+              <a href={CV_DATA.personal.github} target="_blank" rel="noreferrer" className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
+                <Github className="w-6 h-6" />
+              </a>
+              <a href={CV_DATA.personal.linkedin} target="_blank" rel="noreferrer" className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
+                <Linkedin className="w-6 h-6" />
+              </a>
+              <a href={`mailto:${CV_DATA.personal.email}`} className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
+                <Mail className="w-6 h-6" />
+              </a>
+            </div>
+          </FadeInSection>
 
           <button 
             onClick={() => scrollTo('about')}
@@ -328,128 +363,148 @@ export default function App() {
 
         {/* 👤 SECCIÓN: SOBRE MÍ & SKILLS */}
         <section id="about" className="scroll-mt-24">
-          <div className="flex items-center gap-4 mb-12">
-            <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">01.</span> Sobre Mí</h3>
-            <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
-          </div>
-          
-          <div className="grid md:grid-cols-2 gap-12">
-            <div className="space-y-6 text-slate-400 leading-relaxed">
-              <p>{CV_DATA.personal.about}</p>
-              <div className="flex items-center gap-2 text-slate-300 bg-slate-900 w-fit px-4 py-2 rounded-lg border border-slate-800">
-                <MapPin className="w-5 h-5 text-cyan-400" />
-                <span>{CV_DATA.personal.location}</span>
-              </div>
+                  <section id="about" className="scroll-mt-24">
+          <FadeInSection>
+            <div className="flex items-center gap-4 mb-12">
+              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">01.</span> Sobre Mí</h3>
+              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
             </div>
             
-            <div>
-              <h4 className="text-xl font-semibold text-slate-200 mb-6 flex items-center gap-2">
-                <Code2 className="w-5 h-5 text-cyan-400" /> Tecnologías que uso
-              </h4>
-              <div className="flex flex-wrap gap-3">
-                {CV_DATA.skills.map((skill, index) => (
-                  <span 
-                    key={index} 
-                    className="px-4 py-2 bg-slate-800/50 text-slate-300 rounded-lg border border-slate-700/50 text-sm font-medium hover:bg-slate-800 hover:border-cyan-500/50 hover:text-cyan-300 transition-all cursor-default"
-                  >
-                    {skill}
-                  </span>
-                ))}
+            <div className="max-w-4xl">
+              <div className="space-y-6 text-slate-400 leading-relaxed text-lg mb-10">
+                <p>{CV_DATA.personal.about}</p>
+                <div className="flex items-center gap-2 text-slate-300 bg-slate-900 w-fit px-5 py-3 rounded-lg border border-slate-800 shadow-sm">
+                  <MapPin className="w-5 h-5 text-cyan-400" />
+                  <span>{CV_DATA.personal.location}</span>
+                </div>
+              </div>
+              
+              <div>
+                <h4 className="text-xl font-semibold text-slate-200 mb-6 flex items-center gap-2">
+                  <Code2 className="w-5 h-5 text-cyan-400" /> Tecnologías y Herramientas
+                </h4>
+                <div className="flex flex-wrap gap-3">
+                  {CV_DATA.skills.map((skill, index) => (
+                    <span 
+                      key={index} 
+                      className="px-4 py-2 bg-slate-800/50 text-slate-300 rounded-lg border border-slate-700/50 text-sm font-medium hover:bg-cyan-950/50 hover:border-cyan-500/50 hover:text-cyan-300 hover:-translate-y-1 transition-all duration-300 cursor-default shadow-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          </FadeInSection>
         </section>
 
-        {/* 💼 SECCIÓN: TRAYECTORIA (EXPERIENCIA Y EDUCACIÓN) */}
+        {/* 💼 SECCIÓN: EXPERIENCIA LABORAL */}
         <section id="experience" className="scroll-mt-24">
-          <div className="flex items-center gap-4 mb-12">
-            <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">02.</span> Trayectoria</h3>
-            <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
-          </div>
+          <FadeInSection>
+            <div className="flex items-center gap-4 mb-16">
+              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">02.</span> Experiencia Laboral</h3>
+              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+            </div>
 
-          <div className="grid md:grid-cols-2 gap-16">
-            {/* Experiencia */}
-            <div>
-              <h4 className="text-2xl font-semibold text-slate-200 mb-8 flex items-center gap-3">
-                <Briefcase className="w-6 h-6 text-cyan-400" /> Experiencia Laboral
-              </h4>
-              <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-800 before:to-transparent">
-                {CV_DATA.experience.map((job) => (
-                  <div key={job.id} className="relative pl-12 md:pl-0 group">
-                    <div className="md:hidden absolute left-0 top-1 w-10 h-10 bg-slate-900 border border-slate-800 rounded-full flex items-center justify-center group-hover:border-cyan-400 transition-colors z-10">
-                      <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+            <div className="max-w-4xl mx-auto space-y-12 relative before:absolute before:top-0 before:bottom-0 before:left-5 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-cyan-500/20 before:via-cyan-500/20 before:to-transparent">
+              {CV_DATA.experience.map((job, index) => (
+                <FadeInSection key={job.id} delay={index * 150}>
+                  <div className="relative pl-16 md:pl-0 group md:flex md:justify-between md:items-center md:w-full md:odd:flex-row-reverse">
+                    {/* Timeline Dot */}
+                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 w-10 h-10 bg-slate-950 border-2 border-slate-800 rounded-full flex items-center justify-center group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
+                      <div className="w-3 h-3 bg-cyan-400 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                     </div>
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all group-hover:-translate-y-1 shadow-lg shadow-slate-950/50">
-                      <span className="text-cyan-400 font-mono text-sm mb-2 block">{job.period}</span>
-                      <h5 className="text-xl font-bold text-slate-200">{job.role}</h5>
-                      <h6 className="text-slate-400 mb-4">{job.company}</h6>
+                    
+                    {/* Card */}
+                    <div className="md:w-[45%] bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-8 hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-cyan-900/10">
+                      <span className="inline-block px-3 py-1 bg-cyan-950/30 text-cyan-400 border border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
+                      <h5 className="text-xl font-bold text-slate-100 mb-2">{job.role}</h5>
+                      <h6 className="text-slate-400 font-medium mb-4 flex items-center gap-2">
+                        <Briefcase className="w-4 h-4" /> {job.company}
+                      </h6>
                       <p className="text-slate-500 text-sm leading-relaxed">{job.description}</p>
                     </div>
                   </div>
-                ))}
-              </div>
+                </FadeInSection>
+              ))}
+            </div>
+          </FadeInSection>
+        </section>
+
+        {/* 🎓 SECCIÓN: FORMACIÓN ACADÉMICA */}
+        <section id="education" className="scroll-mt-24">
+          <FadeInSection>
+            <div className="flex items-center gap-4 mb-12">
+              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">03.</span> Formación Académica</h3>
+              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
             </div>
 
-            {/* Educación */}
-            <div>
-              <h4 className="text-2xl font-semibold text-slate-200 mb-8 flex items-center gap-3">
-                <GraduationCap className="w-6 h-6 text-cyan-400" /> Educación
-              </h4>
-              <div className="space-y-8">
-                {CV_DATA.education.map((edu) => (
-                  <div key={edu.id} className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-slate-700 transition-all hover:-translate-y-1 shadow-lg shadow-slate-950/50">
-                    <span className="text-cyan-400 font-mono text-sm mb-2 block">{edu.period}</span>
-                    <h5 className="text-xl font-bold text-slate-200">{edu.degree}</h5>
-                    <h6 className="text-slate-400 mb-4">{edu.institution}</h6>
-                    <p className="text-slate-500 text-sm leading-relaxed">{edu.description}</p>
+            <div className="grid md:grid-cols-3 gap-6">
+              {CV_DATA.education.map((edu, index) => (
+                <FadeInSection key={edu.id} delay={index * 150} className="h-full">
+                  <div className="h-full bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-xl p-8 hover:border-slate-700 transition-all duration-500 hover:shadow-xl hover:shadow-slate-900/50 hover:-translate-y-2 group flex flex-col relative overflow-hidden">
+                    <div className="absolute -right-6 -bottom-6 text-slate-800/30 group-hover:text-cyan-900/10 transition-colors duration-500 transform group-hover:-rotate-12 group-hover:scale-110">
+                      <GraduationCap className="w-32 h-32" />
+                    </div>
+                    <div className="relative z-10 flex flex-col h-full">
+                      <span className="text-cyan-400 font-mono text-sm mb-4 block">{edu.period}</span>
+                      <h5 className="text-lg font-bold text-slate-200 mb-2 leading-snug">{edu.degree}</h5>
+                      <h6 className="text-slate-400 mb-4 text-sm font-medium">{edu.institution}</h6>
+                      <p className="text-slate-500 text-sm leading-relaxed mt-auto">{edu.description}</p>
+                    </div>
                   </div>
-                ))}
-              </div>
+                </FadeInSection>
+              ))}
             </div>
-          </div>
+          </FadeInSection>
         </section>
 
         {/* 🚀 SECCIÓN: PROYECTOS */}
         <section id="projects" className="scroll-mt-24">
-          <div className="flex items-center gap-4 mb-12">
-            <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">03.</span> Proyectos Destacados</h3>
-            <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
-          </div>
+          <FadeInSection>
+            <div className="flex items-center gap-4 mb-12">
+              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">04.</span> Proyectos Destacados</h3>
+              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+            </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {CV_DATA.projects.map((project) => (
-              <div key={project.id} className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-full hover:border-cyan-900/60 hover:shadow-lg hover:shadow-cyan-900/20 transition-all group">
-                {/* Imagen de Portada */}
-                <div className="h-56 overflow-hidden relative">
-                  <img src={project.cover} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors"></div>
-                </div>
-                
-                {/* Contenido de la Card */}
-                <div className="p-8 flex flex-col flex-grow">
-                  <h4 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-cyan-400 transition-colors">{project.title}</h4>
-                  <p className="text-slate-400 flex-grow mb-6 leading-relaxed">
-                    {project.shortDescription}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {project.tags.slice(0, 4).map((tag, i) => (
-                      <span key={i} className="text-xs font-mono text-cyan-400/80 bg-cyan-950/30 border border-cyan-900/30 px-2 py-1 rounded">
-                        {tag}
-                      </span>
-                    ))}
+            <div className="grid md:grid-cols-2 gap-8">
+              {CV_DATA.projects.map((project, index) => (
+                <FadeInSection key={project.id} delay={index * 200}>
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-full hover:border-cyan-900/60 hover:shadow-lg hover:shadow-cyan-900/20 transition-all duration-500 group">
+                    {/* Imagen de Portada */}
+                    <div className="h-56 overflow-hidden relative">
+                      <img src={project.cover} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                      <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                    </div>
+                    
+                    {/* Contenido de la Card */}
+                    <div className="p-8 flex flex-col flex-grow">
+                      <h4 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-cyan-400 transition-colors">{project.title}</h4>
+                      <p className="text-slate-400 flex-grow mb-6 leading-relaxed">
+                        {project.shortDescription}
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2 mb-8">
+                        {project.tags.slice(0, 4).map((tag, i) => (
+                          <span key={i} className="text-xs font-mono text-cyan-400/80 bg-cyan-950/30 border border-cyan-900/30 px-2 py-1 rounded">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+
+                      <button 
+                        onClick={() => setSelectedProject(project)}
+                        className="w-full py-3 px-4 bg-slate-800/50 hover:bg-cyan-900/30 text-slate-200 hover:text-cyan-300 font-medium rounded-lg border border-slate-700 hover:border-cyan-800 transition-all duration-300 flex items-center justify-center gap-2 mt-auto hover:shadow-md hover:shadow-cyan-900/20"
+                      >
+                        Ver detalles del proyecto
+                      </button>
+                    </div>
                   </div>
-
-                  <button 
-                    onClick={() => setSelectedProject(project)}
-                    className="w-full py-3 px-4 bg-slate-800/50 hover:bg-cyan-900/30 text-slate-200 hover:text-cyan-300 font-medium rounded-lg border border-slate-700 hover:border-cyan-800 transition-all flex items-center justify-center gap-2 mt-auto"
-                  >
-                    Ver detalles del proyecto
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+                </FadeInSection>
+              ))}
+            </div>
+          </FadeInSection>
+        </section>
         </section>
         
       </main>
