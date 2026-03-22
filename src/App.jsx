@@ -324,7 +324,7 @@ export default function App() {
         </div>
       </nav>
 
-      <main className="container mx-auto px-6 md:px-12 pt-24 pb-20 space-y-32">
+      <main className="container mx-auto px-6 md:px-12 pt-24 pb-20 space-y-40">
         
         {/* 🌟 SECCIÓN: INICIO (HERO) */}
         <section id="home" className="min-h-[80vh] flex flex-col justify-center items-start pt-10">
@@ -362,8 +362,7 @@ export default function App() {
         </section>
 
         {/* 👤 SECCIÓN: SOBRE MÍ & SKILLS */}
-        <section id="about" className="scroll-mt-24">
-                  <section id="about" className="scroll-mt-24">
+        <section id="about" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-12">
               <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">01.</span> Sobre Mí</h3>
@@ -399,7 +398,7 @@ export default function App() {
         </section>
 
         {/* 💼 SECCIÓN: EXPERIENCIA LABORAL */}
-        <section id="experience" className="scroll-mt-24">
+        <section id="experience" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-16">
               <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">02.</span> Experiencia Laboral</h3>
@@ -409,12 +408,15 @@ export default function App() {
             <div className="max-w-4xl mx-auto space-y-12 relative before:absolute before:top-0 before:bottom-0 before:left-5 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-cyan-500/20 before:via-cyan-500/20 before:to-transparent">
               {CV_DATA.experience.map((job, index) => (
                 <FadeInSection key={job.id} delay={index * 150}>
-                  <div className="relative pl-16 md:pl-0 group md:flex md:justify-between md:items-center md:w-full md:odd:flex-row-reverse">
+                  <div className={`relative pl-16 md:pl-0 group md:flex md:justify-between md:items-center w-full ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
                     {/* Timeline Dot */}
-                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 w-10 h-10 bg-slate-950 border-2 border-slate-800 rounded-full flex items-center justify-center group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
+                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 md:top-1/2 md:-translate-y-1/2 w-10 h-10 bg-slate-950 border-2 border-slate-800 rounded-full flex items-center justify-center group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
                       <div className="w-3 h-3 bg-cyan-400 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                     </div>
                     
+                    {/* Spacer para alternar la card al lado correcto en Desktop */}
+                    <div className="hidden md:block md:w-[45%]"></div>
+
                     {/* Card */}
                     <div className="md:w-[45%] bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-8 hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-cyan-900/10">
                       <span className="inline-block px-3 py-1 bg-cyan-950/30 text-cyan-400 border border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
@@ -432,7 +434,7 @@ export default function App() {
         </section>
 
         {/* 🎓 SECCIÓN: FORMACIÓN ACADÉMICA */}
-        <section id="education" className="scroll-mt-24">
+        <section id="education" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-12">
               <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">03.</span> Formación Académica</h3>
@@ -460,7 +462,7 @@ export default function App() {
         </section>
 
         {/* 🚀 SECCIÓN: PROYECTOS */}
-        <section id="projects" className="scroll-mt-24">
+        <section id="projects" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-12">
               <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">04.</span> Proyectos Destacados</h3>
@@ -504,7 +506,6 @@ export default function App() {
               ))}
             </div>
           </FadeInSection>
-        </section>
         </section>
         
       </main>
