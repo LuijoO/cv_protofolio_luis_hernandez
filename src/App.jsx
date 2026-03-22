@@ -128,6 +128,32 @@ const CV_DATA = {
       ],
       tags: ["React", "Node.js", "Tailwind CSS", "API REST"],
       link: "#",
+    },
+    {
+      id: 3,
+      title: "App de Gestión de Tareas",
+      shortDescription: "Aplicación web para organizar proyectos y tareas con funcionalidad drag-and-drop.",
+      fullDescription: "Desarrollada con React y un backend en Node.js. Permite a los usuarios crear tableros al estilo Kanban, asignar tareas, establecer fechas límite y visualizar el progreso en tiempo real.",
+      cover: "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=800&q=80",
+      images: [
+        "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=1200&q=80",
+        "https://images.unsplash.com/photo-1540350394557-8d14678e7f91?w=1200&q=80"
+      ],
+      tags: ["React", "Node.js", "Express", "MongoDB"],
+      link: "#",
+    },
+    {
+      id: 4,
+      title: "Blog Personal / CMS",
+      shortDescription: "Plataforma de blog autogestionable con editor de texto enriquecido.",
+      fullDescription: "Sistema de gestión de contenidos (CMS) construido desde cero. Cuenta con autenticación de usuarios, roles y permisos, editor Markdown para los artículos, y optimización SEO en el frontend.",
+      cover: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80",
+      images: [
+        "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=1200&q=80",
+        "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=1200&q=80"
+      ],
+      tags: ["JavaScript", "HTML/CSS", "PHP", "MySQL"],
+      link: "#",
     }
   ]
 };
@@ -270,6 +296,39 @@ export default function App() {
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const carouselRef = useRef(null);
+
+  // Sincronizar el scroll del carrusel con los bullets
+  const handleCarouselScroll = () => {
+    if (!carouselRef.current) return;
+    const { scrollLeft, scrollWidth, clientWidth } = carouselRef.current;
+    
+    // Si estamos al final del scroll, marcamos el último bullet
+    if (Math.abs(scrollWidth - clientWidth - scrollLeft) < 10) {
+      setCurrentProjectIndex(CV_DATA.projects.length - 1);
+      return;
+    }
+    const itemWidth = carouselRef.current.firstElementChild?.offsetWidth + 24 || scrollWidth / CV_DATA.projects.length;
+    const index = Math.round(scrollLeft / itemWidth);
+    setCurrentProjectIndex(Math.min(Math.max(index, 0), CV_DATA.projects.length - 1));
+  };
+
+  const scrollToProject = (index) => {
+    if (!carouselRef.current) return;
+    const { scrollWidth, clientWidth } = carouselRef.current;
+    const itemWidth = carouselRef.current.firstElementChild?.offsetWidth + 24 || 0;
+    const targetScroll = index === CV_DATA.projects.length - 1 ? scrollWidth - clientWidth : index * itemWidth;
+    
+    carouselRef.current.scrollTo({ left: targetScroll, behavior: 'smooth' });
+    setCurrentProjectIndex(index);
+  };
+
+  const scrollCarousel = (direction) => {
+    let newIndex = direction === 'left' ? currentProjectIndex - 1 : currentProjectIndex + 1;
+    newIndex = Math.max(0, Math.min(newIndex, CV_DATA.projects.length - 1));
+    scrollToProject(newIndex);
+  };
 
   // Detectar scroll para cambiar el estilo de la navegación
   useEffect(() => {
@@ -369,7 +428,7 @@ export default function App() {
               <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
             </div>
             
-            <div className="max-w-4xl">
+            <div className="w-full">
               <div className="space-y-6 text-slate-400 leading-relaxed text-lg mb-10">
                 <p>{CV_DATA.personal.about}</p>
                 <div className="flex items-center gap-2 text-slate-300 bg-slate-900 w-fit px-5 py-3 rounded-lg border border-slate-800 shadow-sm">
@@ -464,15 +523,32 @@ export default function App() {
         {/* 🚀 SECCIÓN: PROYECTOS */}
         <section id="projects" className="scroll-mt-32">
           <FadeInSection>
-            <div className="flex items-center gap-4 mb-12">
-              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">04.</span> Proyectos Destacados</h3>
-              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+            <div className="flex items-center justify-between gap-4 mb-12">
+              <div className="flex items-center gap-4 flex-grow">
+                <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">04.</span> Proyectos Destacados</h3>
+                <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+              </div>
+              
+              {/* Controles del Carrusel (Desktop) */}
+              <div className="hidden md:flex gap-3">
+                <button onClick={() => scrollCarousel('left')} className="p-3 bg-slate-900 border border-slate-800 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-800 hover:bg-slate-800 transition-all">
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button onClick={() => scrollCarousel('right')} className="p-3 bg-slate-900 border border-slate-800 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-800 hover:bg-slate-800 transition-all">
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
+            {/* Contenedor del Carrusel */}
+            <div 
+              ref={carouselRef}
+              onScroll={handleCarouselScroll}
+              className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
+            >
               {CV_DATA.projects.map((project, index) => (
-                <FadeInSection key={project.id} delay={index * 200}>
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col h-full hover:border-cyan-900/60 hover:shadow-lg hover:shadow-cyan-900/20 transition-all duration-500 group">
+                <FadeInSection key={project.id} delay={index * 150} className="snap-center shrink-0 w-[85vw] md:w-[calc(50%-12px)] flex flex-col">
+                  <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col flex-grow hover:border-cyan-900/60 hover:shadow-lg hover:shadow-cyan-900/20 transition-all duration-500 group">
                     {/* Imagen de Portada */}
                     <div className="h-56 overflow-hidden relative">
                       <img src={project.cover} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -503,6 +579,22 @@ export default function App() {
                     </div>
                   </div>
                 </FadeInSection>
+              ))}
+            </div>
+
+            {/* 🔵 Indicadores / Bullets */}
+            <div className="flex justify-center gap-3 mt-4">
+              {CV_DATA.projects.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => scrollToProject(index)}
+                  className={`transition-all duration-300 rounded-full h-2.5 ${
+                    index === currentProjectIndex 
+                      ? 'w-8 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]' 
+                      : 'w-2.5 bg-slate-700 hover:bg-slate-500'
+                  }`}
+                  aria-label={`Ir al proyecto ${index + 1}`}
+                />
               ))}
             </div>
           </FadeInSection>
