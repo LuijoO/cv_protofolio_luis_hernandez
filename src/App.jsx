@@ -25,8 +25,8 @@ const CV_DATA = {
     role: "Desarrollador Web Frontend",
     location: "Valencia, España",
     email: "luijohm@gmail.com",
-    github: "https://github.com",
-    linkedin: "https://linkedin.com",
+    github: "https://github.com/LuijoO/cv_protofolio_luis_hernandez",
+    linkedin: "https://www.linkedin.com/in/luis-jose-hernandez-meneses/",
     about: "Desarrollador web frontend con más de 10 años de experiencia en la creación, gestión y mantenimiento de sitios y aplicaciones web. Especializado en React, JavaScript y entornos AEM (Adobe Experience Manager). Apasionado por el código limpio, las metodologías ágiles (Scrum/Kanban) y la construcción de interfaces eficientes. Nivel de inglés B1/C1 y gran capacidad para resolver problemas complejos."
   },
   skills: [
