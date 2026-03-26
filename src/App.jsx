@@ -13,7 +13,10 @@ import {
   Globe,
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Moon,
+  Sun,
+  Download
 } from 'lucide-react';
 
 // ==========================================
@@ -329,6 +332,7 @@ const UI_TEXT = {
     hero: { greeting: 'Hi, my name is', rolePrefix: 'I am a ' },
     sections: { about: 'About Me', skills: 'Technologies & Tools', experience: 'Work Experience', education: 'Education', projects: 'Featured Projects' },
     project: { details: 'View project details', about: 'About the project', visit: 'Visit Project' },
+    downloadCV: 'Download my CV',
     footer: { built: 'Designed & Built with React & Tailwind CSS', rights: 'All rights reserved.' }
   },
   es: {
@@ -336,6 +340,7 @@ const UI_TEXT = {
     hero: { greeting: 'Hola, mi nombre es', rolePrefix: 'Soy ' },
     sections: { about: 'Sobre Mí', skills: 'Tecnologías y Herramientas', experience: 'Experiencia Laboral', education: 'Formación Académica', projects: 'Proyectos Destacados' },
     project: { details: 'Ver detalles del proyecto', about: 'Acerca del proyecto', visit: 'Visitar Proyecto' },
+    downloadCV: 'Descarga mi CV',
     footer: { built: 'Diseñado y construido con React & Tailwind CSS', rights: 'Todos los derechos reservados.' }
   }
 };
@@ -443,11 +448,11 @@ const ProjectModal = ({ project, onClose, language }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" onClick={onClose}>
-      <div className="relative w-full max-w-4xl bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
         {/* Encabezado del Modal */}
-        <div className="flex justify-between items-center p-6 border-b border-slate-800">
-          <h3 className="text-2xl font-bold text-slate-100">{project.title}</h3>
-          <button onClick={onClose} className="p-2 text-slate-400 hover:text-cyan-400 hover:bg-slate-800 rounded-full transition-colors">
+        <div className="flex justify-between items-center p-6 border-b border-amber-100 dark:border-slate-800">
+          <h3 className="text-2xl font-bold text-blue-950 dark:text-slate-100">{project.title}</h3>
+          <button onClick={onClose} className="p-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-full transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -455,19 +460,19 @@ const ProjectModal = ({ project, onClose, language }) => {
         {/* Contenido scrolleable */}
         <div className="overflow-y-auto p-6 space-y-8">
           {/* Carrusel de imágenes */}
-          <div className="relative group rounded-xl overflow-hidden bg-slate-800 aspect-video flex items-center justify-center">
+          <div className="relative group rounded-xl overflow-hidden bg-amber-50 dark:bg-slate-800 aspect-video flex items-center justify-center">
             <img src={project.images[currentImageIndex]} alt={`Captura de ${project.title}`} className="w-full h-full object-cover" />
             {project.images.length > 1 && (
               <>
-                <button onClick={prevImage} className="absolute left-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-cyan-600 backdrop-blur-sm">
+                <button onClick={prevImage} className="absolute left-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600 dark:hover:bg-cyan-600 backdrop-blur-sm">
                   <ChevronLeft className="w-6 h-6" />
                 </button>
-                <button onClick={nextImage} className="absolute right-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-cyan-600 backdrop-blur-sm">
+                <button onClick={nextImage} className="absolute right-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600 dark:hover:bg-cyan-600 backdrop-blur-sm">
                   <ChevronRight className="w-6 h-6" />
                 </button>
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-slate-950/40 px-3 py-2 rounded-full backdrop-blur-sm">
                   {project.images.map((_, idx) => (
-                    <button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`w-2 h-2 rounded-full transition-colors ${idx === currentImageIndex ? 'bg-cyan-400' : 'bg-slate-400/50'}`} />
+                    <button key={idx} onClick={() => setCurrentImageIndex(idx)} className={`w-2 h-2 rounded-full transition-colors ${idx === currentImageIndex ? 'bg-amber-400 dark:bg-cyan-400' : 'bg-slate-400/50'}`} />
                   ))}
                 </div>
               </>
@@ -476,15 +481,15 @@ const ProjectModal = ({ project, onClose, language }) => {
           
           {/* Descripción Extendida */}
           <div>
-            <h4 className="text-xl font-semibold text-cyan-400 mb-4">{t.about}</h4>
-            <p className="text-slate-300 leading-relaxed mb-6 whitespace-pre-line">{project.fullDescription}</p>
+            <h4 className="text-xl font-semibold text-amber-600 dark:text-cyan-400 mb-4">{t.about}</h4>
+            <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6 whitespace-pre-line">{project.fullDescription}</p>
             <div className="flex flex-wrap gap-2 mb-6">
               {project.tags.map(tag => (
-                <span key={tag} className="px-3 py-1 bg-slate-800 text-slate-300 rounded-full text-sm border border-slate-700">{tag}</span>
+                <span key={tag} className="px-3 py-1 bg-amber-50 dark:bg-slate-800 text-blue-800 dark:text-slate-300 rounded-full text-sm border border-amber-200 dark:border-slate-700">{tag}</span>
               ))}
             </div>
             {project.link !== '#' && (
-              <a href={project.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded-lg transition-colors shadow-lg shadow-cyan-900/20">
+              <a href={project.link} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 dark:bg-cyan-600 hover:bg-blue-700 dark:hover:bg-cyan-500 text-white font-medium rounded-lg transition-colors shadow-lg shadow-blue-900/20 dark:shadow-cyan-900/20">
                 {t.visit} <ExternalLink className="w-4 h-4" />
               </a>
             )}
@@ -501,6 +506,7 @@ const ProjectModal = ({ project, onClose, language }) => {
 
 export default function App() {
   const [language, setLanguage] = useState('en'); // Estado de idioma (por defecto Inglés)
+  const [theme, setTheme] = useState('dark');     // Estado de tema (por defecto oscuro)
   const [activeSection, setActiveSection] = useState('home');
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -509,6 +515,15 @@ export default function App() {
   
   const data = CV_DATA[language];
   const t = UI_TEXT[language];
+
+  // Aplicar el tema al HTML principal
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
 
   // Sincronizar el scroll del carrusel con los bullets
   const handleCarouselScroll = () => {
@@ -572,20 +587,41 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans selection:bg-cyan-900 selection:text-cyan-50">
+    <div className="min-h-screen bg-[#FDFBEE] dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans selection:bg-amber-200 dark:selection:bg-cyan-900 selection:text-blue-900 dark:selection:text-cyan-50 transition-colors duration-300">
       
       {/* 🧭 NAVEGACIÓN FLOTANTE */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-slate-900/90 backdrop-blur-md shadow-lg py-4' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg py-4 border-b border-amber-200 dark:border-transparent' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
-          <div className="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent cursor-pointer" onClick={() => scrollTo('home')}>
-            {data.personal.name.split(' ')[0]}<span className="text-slate-200">.dev</span>
+          <div className="text-xl font-bold bg-gradient-to-r from-amber-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500 bg-clip-text text-transparent cursor-pointer" onClick={() => scrollTo('home')}>
+            {data.personal.name.split(' ')[0]}<span className="text-blue-900 dark:text-slate-200">.dev</span>
           </div>
           
-          <div className="flex items-center gap-6 md:gap-8">
+          <div className="flex items-center gap-4 md:gap-6">
+            {/* 🌙/☀️ SWITCH DE TEMA */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-amber-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-cyan-800 transition-all shadow-inner"
+              aria-label="Toggle Theme"
+            >
+              <div className="w-full flex justify-between px-1.5 text-[10px] font-bold text-slate-400 z-0">
+                <Moon className="w-3 h-3" />
+                <Sun className="w-3 h-3" />
+              </div>
+              <div 
+                className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full transition-transform duration-300 flex items-center justify-center text-[10px] font-bold z-10 ${
+                  theme === 'light' 
+                    ? 'translate-x-7 bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] text-blue-950' 
+                    : 'translate-x-0 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] text-slate-950'
+                }`}
+              >
+                {theme === 'light' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </div>
+            </button>
+
             {/* 🇬🇧/🇪🇸 SWITCH DE IDIOMA */}
             <button
               onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-              className="relative w-14 h-7 flex items-center bg-slate-900 rounded-full p-1 cursor-pointer border border-slate-700 hover:border-cyan-800 transition-all shadow-inner"
+              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-amber-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-cyan-800 transition-all shadow-inner"
               aria-label="Toggle Language"
             >
               <div className="w-full flex justify-between px-1.5 text-[10px] font-bold text-slate-400 z-0">
@@ -593,9 +629,9 @@ export default function App() {
                 <span>ES</span>
               </div>
               <div 
-                className={`absolute top-0.5 left-0.5 w-6 h-6 bg-cyan-400 rounded-full shadow-[0_0_10px_rgba(34,211,238,0.5)] transition-transform duration-300 flex items-center justify-center text-[10px] font-bold text-slate-950 z-10 ${
+                className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full transition-transform duration-300 flex items-center justify-center text-[10px] font-bold z-10 ${
                   language === 'es' ? 'translate-x-7' : 'translate-x-0'
-                }`}
+                } ${theme === 'light' ? 'bg-amber-400 text-blue-950 shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 'bg-cyan-400 text-slate-950 shadow-[0_0_10px_rgba(34,211,238,0.5)]'}`}
               >
                 {language.toUpperCase()}
               </div>
@@ -606,7 +642,7 @@ export default function App() {
                 <button 
                   key={item}
                   onClick={() => scrollTo(item)}
-                  className={`capitalize transition-colors hover:text-cyan-400 ${activeSection === item ? 'text-cyan-400' : 'text-slate-400'}`}
+                  className={`capitalize transition-colors hover:text-blue-600 dark:hover:text-cyan-400 ${activeSection === item ? 'text-blue-600 dark:text-cyan-400 font-bold' : 'text-slate-600 dark:text-slate-400'}`}
                 >
                   {t.nav[item]}
                 </button>
@@ -621,33 +657,33 @@ export default function App() {
         {/* 🌟 SECCIÓN: INICIO (HERO) */}
         <section id="home" className="min-h-[80vh] flex flex-col justify-center items-start pt-10">
           <FadeInSection>
-            <p className="text-cyan-400 font-mono mb-4 pl-1">{t.hero.greeting}</p>
-            <h1 className="text-5xl md:text-7xl font-bold text-slate-100 mb-4 tracking-tight">
+            <p className="text-amber-600 dark:text-cyan-400 font-mono mb-4 pl-1">{t.hero.greeting}</p>
+            <h1 className="text-5xl md:text-7xl font-bold text-blue-950 dark:text-slate-100 mb-4 tracking-tight">
               {data.personal.name}.
             </h1>
-            <h2 className="text-4xl md:text-6xl font-ligth text-white font-mono mb-8">
+            <h2 className="text-4xl md:text-6xl font-ligth text-blue-900 dark:text-white font-mono mb-8">
               <Typewriter text={`${t.hero.rolePrefix}${data.personal.role}.`} delay={80} />
             </h2>
-            <p className="text-lg text-slate-400 max-w-2xl mb-12 leading-relaxed">
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-12 leading-relaxed">
               {data.personal.about.substring(0, 150)}... 
             </p>
             
             <div className="flex gap-4 mb-16">
-              <a href={data.personal.github} target="_blank" rel="noreferrer" className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
-                <Github className="w-6 h-6" />
-              </a>
-              <a href={data.personal.linkedin} target="_blank" rel="noreferrer" className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
-                <Linkedin className="w-6 h-6" />
-              </a>
-              <a href={`mailto:${data.personal.email}`} className="p-3 bg-slate-800 text-slate-300 rounded-full hover:bg-cyan-900 hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-900/20">
-                <Mail className="w-6 h-6" />
-              </a>
+              {[
+                { icon: Github, url: data.personal.github },
+                { icon: Linkedin, url: data.personal.linkedin },
+                { icon: Mail, url: `mailto:${data.personal.email}` }
+              ].map((social, idx) => (
+                <a key={idx} href={social.url} target="_blank" rel="noreferrer" className="p-3 bg-white dark:bg-slate-800 text-blue-800 dark:text-slate-300 rounded-full border border-amber-200 dark:border-transparent hover:bg-amber-100 dark:hover:bg-cyan-900 hover:text-blue-700 dark:hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-amber-500/20 dark:hover:shadow-cyan-900/20">
+                  <social.icon className="w-6 h-6" />
+                </a>
+              ))}
             </div>
           </FadeInSection>
 
           <button 
             onClick={() => scrollTo('about')}
-            className="animate-bounce p-2 rounded-full border border-slate-700 text-slate-400 hover:text-cyan-400 hover:border-cyan-400 transition-colors"
+            className="animate-bounce p-2 rounded-full border border-amber-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-400 transition-colors"
           >
             <ChevronDown className="w-6 h-6" />
           </button>
@@ -657,28 +693,28 @@ export default function App() {
         <section id="about" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-12">
-              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">01.</span> {t.sections.about}</h3>
-              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">01.</span> {t.sections.about}</h3>
+              <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
             </div>
             
             <div className="w-full">
-              <div className="space-y-6 text-slate-400 leading-relaxed text-lg mb-10">
+              <div className="space-y-6 text-slate-700 dark:text-slate-400 leading-relaxed text-lg mb-10">
                 <p>{data.personal.about}</p>
-                <div className="flex items-center gap-2 text-slate-300 bg-slate-900 w-fit px-5 py-3 rounded-lg border border-slate-800 shadow-sm">
-                  <MapPin className="w-5 h-5 text-cyan-400" />
+                <div className="flex items-center gap-2 text-blue-900 dark:text-slate-300 bg-white dark:bg-slate-900 w-fit px-5 py-3 rounded-lg border border-amber-200 dark:border-slate-800 shadow-sm">
+                  <MapPin className="w-5 h-5 text-amber-500 dark:text-cyan-400" />
                   <span>{data.personal.location}</span>
                 </div>
               </div>
               
               <div>
-                <h4 className="text-xl font-semibold text-slate-200 mb-6 flex items-center gap-2">
-                  <Code2 className="w-5 h-5 text-cyan-400" /> {t.sections.skills}
+                <h4 className="text-xl font-semibold text-blue-950 dark:text-slate-200 mb-6 flex items-center gap-2">
+                  <Code2 className="w-5 h-5 text-amber-500 dark:text-cyan-400" /> {t.sections.skills}
                 </h4>
                 <div className="flex flex-wrap gap-3">
                   {data.skills.map((skill, index) => (
                     <span 
                       key={index} 
-                      className="px-4 py-2 bg-slate-800/50 text-slate-300 rounded-lg border border-slate-700/50 text-sm font-medium hover:bg-cyan-950/50 hover:border-cyan-500/50 hover:text-cyan-300 hover:-translate-y-1 transition-all duration-300 cursor-default shadow-sm"
+                      className="px-4 py-2 bg-white dark:bg-slate-800/50 text-blue-800 dark:text-slate-300 rounded-lg border border-amber-200 dark:border-slate-700/50 text-sm font-medium hover:bg-amber-50 dark:hover:bg-cyan-950/50 hover:border-blue-400 dark:hover:border-cyan-500/50 hover:text-blue-700 dark:hover:text-cyan-300 hover:-translate-y-1 transition-all duration-300 cursor-default shadow-sm hover:shadow-md"
                     >
                       {skill}
                     </span>
@@ -693,30 +729,30 @@ export default function App() {
         <section id="experience" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-16">
-              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">02.</span> {t.sections.experience}</h3>
-              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">02.</span> {t.sections.experience}</h3>
+              <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
             </div>
 
-            <div className="max-w-4xl mx-auto space-y-12 relative before:absolute before:top-0 before:bottom-0 before:left-5 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-cyan-500/20 before:via-cyan-500/20 before:to-transparent">
+            <div className="max-w-4xl mx-auto space-y-12 relative before:absolute before:top-0 before:bottom-0 before:left-5 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-amber-300/60 dark:before:from-cyan-500/20 before:via-amber-300/60 dark:before:via-cyan-500/20 before:to-transparent">
               {data.experience.map((job, index) => (
                 <FadeInSection key={job.id} delay={index * 150}>
                   <div className={`relative pl-16 md:pl-0 group md:flex md:justify-between md:items-center w-full ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
                     {/* Timeline Dot */}
-                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 md:top-1/2 md:-translate-y-1/2 w-10 h-10 bg-slate-950 border-2 border-slate-800 rounded-full flex items-center justify-center group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
-                      <div className="w-3 h-3 bg-cyan-400 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
+                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 md:top-1/2 md:-translate-y-1/2 w-10 h-10 bg-[#FDFBEE] dark:bg-slate-950 border-2 border-amber-300 dark:border-slate-800 rounded-full flex items-center justify-center group-hover:border-blue-500 dark:group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] dark:group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
+                      <div className="w-3 h-3 bg-blue-500 dark:bg-cyan-400 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                     </div>
                     
                     {/* Spacer para alternar la card al lado correcto en Desktop */}
                     <div className="hidden md:block md:w-[45%]"></div>
 
                     {/* Card */}
-                    <div className="md:w-[45%] bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-xl p-8 hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg hover:shadow-cyan-900/10">
-                      <span className="inline-block px-3 py-1 bg-cyan-950/30 text-cyan-400 border border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
-                      <h5 className="text-xl font-bold text-slate-100 mb-2">{job.role}</h5>
-                      <h6 className="text-slate-400 font-medium mb-4 flex items-center gap-2">
+                    <div className="md:w-[45%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-amber-200 dark:border-slate-800 rounded-xl p-8 hover:border-blue-400/50 dark:hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-amber-900/5 dark:shadow-cyan-900/10">
+                      <span className="inline-block px-3 py-1 bg-amber-100 dark:bg-cyan-950/30 text-amber-700 dark:text-cyan-400 border border-amber-200 dark:border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
+                      <h5 className="text-xl font-bold text-blue-950 dark:text-slate-100 mb-2">{job.role}</h5>
+                      <h6 className="text-blue-800 dark:text-slate-400 font-medium mb-4 flex items-center gap-2">
                         <Briefcase className="w-4 h-4" /> {job.company}
                       </h6>
-                      <p className="text-slate-500 text-sm leading-relaxed">{job.description}</p>
+                      <p className="text-slate-600 dark:text-slate-500 text-sm leading-relaxed">{job.description}</p>
                     </div>
                   </div>
                 </FadeInSection>
@@ -729,22 +765,22 @@ export default function App() {
         <section id="education" className="scroll-mt-32">
           <FadeInSection>
             <div className="flex items-center gap-4 mb-12">
-              <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">03.</span> {t.sections.education}</h3>
-              <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">03.</span> {t.sections.education}</h3>
+              <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
             </div>
 
         <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
               {data.education.map((edu, index) => (
             <FadeInSection key={edu.id} delay={index * 150} className={`h-full ${index < 2 ? 'md:col-span-3' : 'md:col-span-2'}`}>
-                  <div className="h-full bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-xl p-8 hover:border-slate-700 transition-all duration-500 hover:shadow-xl hover:shadow-slate-900/50 hover:-translate-y-2 group flex flex-col relative overflow-hidden">
-                    <div className="absolute -right-6 -bottom-6 text-slate-800/30 group-hover:text-cyan-900/10 transition-colors duration-500 transform group-hover:-rotate-12 group-hover:scale-110">
+                  <div className="h-full bg-gradient-to-br from-white to-amber-50/50 dark:from-slate-900 dark:to-slate-950 border border-amber-200 dark:border-slate-800 rounded-xl p-8 hover:border-blue-300 dark:hover:border-slate-700 transition-all duration-500 hover:shadow-xl hover:shadow-blue-900/10 dark:hover:shadow-slate-900/50 hover:-translate-y-2 group flex flex-col relative overflow-hidden">
+                    <div className="absolute -right-6 -bottom-6 text-amber-200/50 dark:text-slate-800/30 group-hover:text-blue-100 dark:group-hover:text-cyan-900/10 transition-colors duration-500 transform group-hover:-rotate-12 group-hover:scale-110">
                       <GraduationCap className="w-32 h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col h-full">
-                      <span className="text-cyan-400 font-mono text-sm mb-4 block">{edu.period}</span>
-                      <h5 className="text-lg font-bold text-slate-200 mb-2 leading-snug">{edu.degree}</h5>
-                      <h6 className="text-slate-400 mb-4 text-sm font-medium">{edu.institution}</h6>
-                      <p className="text-slate-500 text-sm leading-relaxed mt-auto">{edu.description}</p>
+                      <span className="text-amber-600 dark:text-cyan-400 font-mono text-sm mb-4 block">{edu.period}</span>
+                      <h5 className="text-lg font-bold text-blue-950 dark:text-slate-200 mb-2 leading-snug">{edu.degree}</h5>
+                      <h6 className="text-blue-800 dark:text-slate-400 mb-4 text-sm font-medium">{edu.institution}</h6>
+                      <p className="text-slate-600 dark:text-slate-500 text-sm leading-relaxed mt-auto">{edu.description}</p>
                     </div>
                   </div>
                 </FadeInSection>
@@ -758,16 +794,16 @@ export default function App() {
           <FadeInSection>
             <div className="flex items-center justify-between gap-4 mb-12">
               <div className="flex items-center gap-4 flex-grow">
-                <h3 className="text-3xl font-bold text-slate-100"><span className="text-cyan-400 font-mono text-xl mr-2">04.</span> {t.sections.projects}</h3>
-                <div className="h-px bg-slate-800 flex-grow max-w-xs"></div>
+                <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">04.</span> {t.sections.projects}</h3>
+                <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
               </div>
               
               {/* Controles del Carrusel (Desktop) */}
               <div className="hidden md:flex gap-3">
-                <button onClick={() => scrollCarousel('left')} className="p-3 bg-slate-900 border border-slate-800 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-800 hover:bg-slate-800 transition-all">
+                <button onClick={() => scrollCarousel('left')} className="p-3 bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-full text-blue-800 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-800 hover:bg-amber-50 dark:hover:bg-slate-800 transition-all">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button onClick={() => scrollCarousel('right')} className="p-3 bg-slate-900 border border-slate-800 rounded-full text-slate-400 hover:text-cyan-400 hover:border-cyan-800 hover:bg-slate-800 transition-all">
+                <button onClick={() => scrollCarousel('right')} className="p-3 bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-full text-blue-800 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-800 hover:bg-amber-50 dark:hover:bg-slate-800 transition-all">
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
@@ -781,23 +817,23 @@ export default function App() {
             >
               {data.projects.map((project, index) => (
                 <FadeInSection key={project.id} delay={index * 150} className="snap-center shrink-0 w-[85vw] md:w-[calc(50%-12px)] flex flex-col">
-                  <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden flex flex-col flex-grow hover:border-cyan-900/60 hover:shadow-lg hover:shadow-cyan-900/20 transition-all duration-500 group">
+                  <div className="bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col flex-grow hover:border-blue-400 dark:hover:border-cyan-900/60 hover:shadow-lg hover:shadow-blue-900/10 dark:hover:shadow-cyan-900/20 transition-all duration-500 group">
                     {/* Imagen de Portada */}
                     <div className="h-56 overflow-hidden relative">
                       <img src={project.cover} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                      <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors duration-500"></div>
+                      <div className="absolute inset-0 bg-slate-950/10 dark:bg-slate-950/20 group-hover:bg-transparent transition-colors duration-500"></div>
                     </div>
                     
                     {/* Contenido de la Card */}
                     <div className="p-8 flex flex-col flex-grow">
-                      <h4 className="text-2xl font-bold text-slate-200 mb-3 group-hover:text-cyan-400 transition-colors">{project.title}</h4>
-                      <p className="text-slate-400 flex-grow mb-6 leading-relaxed">
+                      <h4 className="text-2xl font-bold text-blue-950 dark:text-slate-200 mb-3 group-hover:text-blue-600 dark:group-hover:text-cyan-400 transition-colors">{project.title}</h4>
+                      <p className="text-slate-600 dark:text-slate-400 flex-grow mb-6 leading-relaxed">
                         {project.shortDescription}
                       </p>
                       
                       <div className="flex flex-wrap gap-2 mb-8">
                         {project.tags.slice(0, 4).map((tag, i) => (
-                          <span key={i} className="text-xs font-mono text-cyan-400/80 bg-cyan-950/30 border border-cyan-900/30 px-2 py-1 rounded">
+                          <span key={i} className="text-xs font-mono text-blue-700 dark:text-cyan-400/80 bg-amber-50 dark:bg-cyan-950/30 border border-amber-200 dark:border-cyan-900/30 px-2 py-1 rounded">
                             {tag}
                           </span>
                         ))}
@@ -805,7 +841,7 @@ export default function App() {
 
                       <button 
                         onClick={() => setSelectedProject(project)}
-                        className="w-full py-3 px-4 bg-slate-800/50 hover:bg-cyan-900/30 text-slate-200 hover:text-cyan-300 font-medium rounded-lg border border-slate-700 hover:border-cyan-800 transition-all duration-300 flex items-center justify-center gap-2 mt-auto hover:shadow-md hover:shadow-cyan-900/20"
+                        className="w-full py-3 px-4 bg-amber-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-cyan-900/30 text-blue-900 dark:text-slate-200 hover:text-blue-700 dark:hover:text-cyan-300 font-medium rounded-lg border border-amber-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-cyan-800 transition-all duration-300 flex items-center justify-center gap-2 mt-auto hover:shadow-md hover:shadow-blue-900/10 dark:hover:shadow-cyan-900/20"
                       >
                         {t.project.details}
                       </button>
@@ -823,20 +859,36 @@ export default function App() {
                   onClick={() => scrollToProject(index)}
                   className={`transition-all duration-300 rounded-full h-2.5 ${
                     index === currentProjectIndex 
-                      ? 'w-8 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)]' 
-                      : 'w-2.5 bg-slate-700 hover:bg-slate-500'
+                      ? 'w-8 bg-amber-500 dark:bg-cyan-400 shadow-[0_0_10px_rgba(245,158,11,0.5)] dark:shadow-[0_0_10px_rgba(34,211,238,0.5)]' 
+                      : 'w-2.5 bg-amber-200 dark:bg-slate-700 hover:bg-amber-400 dark:hover:bg-slate-500'
                   }`}
                   aria-label={`Ir al proyecto ${index + 1}`}
                 />
               ))}
             </div>
           </FadeInSection>
+
+          {/* 📥 BOTÓN DESCARGA CV */}
+          <FadeInSection delay={300}>
+            <div className="flex justify-center mt-20">
+              <a 
+                href="/cv-luis-hernandez.pdf" 
+                download="Luis_Hernandez_CV.pdf"
+                className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-amber-500 to-amber-600 dark:from-cyan-600 dark:to-blue-600 text-white font-bold text-lg rounded-full overflow-hidden shadow-xl shadow-amber-500/20 dark:shadow-cyan-900/30 hover:scale-105 hover:shadow-2xl transition-all duration-300 ring-2 ring-white/20 dark:ring-white/10"
+              >
+                <div className="absolute inset-0 w-full h-full bg-white/20 group-hover:translate-x-full transition-transform duration-500 ease-out -skew-x-12 -ml-4 z-0"></div>
+                <Download className="w-6 h-6 animate-bounce z-10" />
+                <span className="z-10">{t.downloadCV}</span>
+              </a>
+            </div>
+          </FadeInSection>
+
         </section>
         
       </main>
 
       {/* 🏁 FOOTER */}
-      <footer className="text-center py-8 text-slate-500 border-t border-slate-800/50 bg-slate-950">
+      <footer className="text-center py-8 text-slate-500 dark:text-slate-500 border-t border-amber-200 dark:border-slate-800/50 bg-[#FDFBEE] dark:bg-slate-950">
         <p className="text-sm font-mono">
           {t.footer.built}
         </p>
