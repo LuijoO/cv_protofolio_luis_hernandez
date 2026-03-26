@@ -170,6 +170,11 @@ const CV_DATA = {
         tags: ["JavaScript", "HTML/CSS", "PHP", "MySQL"],
         link: "#",
       }
+    ],
+    languages: [
+      { name: "Spanish", level: 100 },
+      { name: "English", level: 90 },
+      { name: "Portuguese", level: 50 }
     ]
   },
   es: {
@@ -319,6 +324,11 @@ const CV_DATA = {
         tags: ["JavaScript", "HTML/CSS", "PHP", "MySQL"],
         link: "#",
       }
+    ],
+    languages: [
+      { name: "Español", level: 100 },
+      { name: "Inglés", level: 90 },
+      { name: "Portugués", level: 50 }
     ]
   }
 };
@@ -330,7 +340,7 @@ const UI_TEXT = {
   en: {
     nav: { home: 'Home', about: 'About', experience: 'Experience', education: 'Education', projects: 'Projects' },
     hero: { greeting: 'Hi, my name is', rolePrefix: 'I am a ' },
-    sections: { about: 'About Me', skills: 'Technologies & Tools', experience: 'Work Experience', education: 'Education', projects: 'Featured Projects' },
+    sections: { about: 'About Me', skills: 'Technologies & Tools', experience: 'Work Experience', education: 'Education', projects: 'Featured Projects', languages: 'Languages' },
     project: { details: 'View project details', about: 'About the project', visit: 'Visit Project' },
     downloadCV: 'Download my CV',
     footer: { built: 'Designed & Built with React & Tailwind CSS', rights: 'All rights reserved.' }
@@ -338,7 +348,7 @@ const UI_TEXT = {
   es: {
     nav: { home: 'Inicio', about: 'Sobre mí', experience: 'Experiencia', education: 'Educación', projects: 'Proyectos' },
     hero: { greeting: 'Hola, mi nombre es', rolePrefix: 'Soy ' },
-    sections: { about: 'Sobre Mí', skills: 'Tecnologías y Herramientas', experience: 'Experiencia Laboral', education: 'Formación Académica', projects: 'Proyectos Destacados' },
+    sections: { about: 'Sobre Mí', skills: 'Tecnologías y Herramientas', experience: 'Experiencia Laboral', education: 'Formación Académica', projects: 'Proyectos Destacados', languages: 'Idiomas' },
     project: { details: 'Ver detalles del proyecto', about: 'Acerca del proyecto', visit: 'Visitar Proyecto' },
     downloadCV: 'Descarga mi CV',
     footer: { built: 'Diseñado y construido con React & Tailwind CSS', rights: 'Todos los derechos reservados.' }
@@ -390,8 +400,7 @@ const Typewriter = ({ text, delay = 100, eraseDelay = 50, pauseTime = 2000 }) =>
 
   return (
     <span className="inline-block">
-      {currentText}
-      <span className="animate-pulse border-r-2 border-cyan-400 ml-1 h-6 inline-block align-middle"></span>
+      {currentText}<span className="animate-pulse border-r-2 border-amber-500 dark:border-cyan-400 ml-1 h-6 inline-block align-middle"></span>
     </span>
   );
 };
@@ -500,6 +509,66 @@ const ProjectModal = ({ project, onClose, language }) => {
   );
 };
 
+// NEW LanguageProgressBar component
+const LanguageProgressBar = ({ name, level, delay = 0 }) => {
+  const [currentLevel, setCurrentLevel] = useState(0);
+  const barRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setIsVisible(true);
+            // No unobserve here, so it can re-trigger if it goes out and comes back
+          } else {
+            setIsVisible(false); // Reset when out of view
+          }
+        });
+      },
+      { threshold: 0.5 } // Trigger when 50% of the component is visible
+    );
+
+    const currentRef = barRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isVisible) {
+      const timer = setTimeout(() => {
+        setCurrentLevel(level);
+      }, delay); // Apply delay before starting animation
+      return () => clearTimeout(timer);
+    } else {
+      setCurrentLevel(0); // Reset level if it goes out of view and comes back, to re-trigger animation
+    }
+  }, [isVisible, level, delay]);
+
+  return (
+    <div ref={barRef} className="mb-4">
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-blue-900 dark:text-slate-300 font-medium">{name}</span>
+        <span className="text-blue-800 dark:text-cyan-400 text-sm font-mono">{level}%</span>
+      </div>
+      <div className="w-full bg-amber-100 dark:bg-slate-800 rounded-full h-2.5">
+        <div
+          className="bg-amber-500 dark:bg-cyan-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
+          style={{ width: `${currentLevel}%` }}
+        ></div>
+      </div>
+    </div>
+  );
+};
+
 // ==========================================
 // 🚀 COMPONENTE PRINCIPAL (APP)
 // ==========================================
@@ -588,7 +657,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-[#FDFBEE] dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans selection:bg-amber-200 dark:selection:bg-cyan-900 selection:text-blue-900 dark:selection:text-cyan-50 transition-colors duration-300">
-      
+
       {/* 🧭 NAVEGACIÓN FLOTANTE */}
       <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg py-4 border-b border-amber-200 dark:border-transparent' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
@@ -596,7 +665,7 @@ export default function App() {
             {data.personal.name.split(' ')[0]}<span className="text-blue-900 dark:text-slate-200">.dev</span>
           </div>
           
-          <div className="flex items-center gap-4 md:gap-6">
+          <div className="flex items-center gap-4 md:gap-6"> {/* Adjusted gap for better spacing */}
             {/* 🌙/☀️ SWITCH DE TEMA */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
@@ -621,7 +690,7 @@ export default function App() {
             {/* 🇬🇧/🇪🇸 SWITCH DE IDIOMA */}
             <button
               onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-amber-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-cyan-800 transition-all shadow-inner"
+              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-amber-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-cyan-800 transition-all shadow-inner ml-2"
               aria-label="Toggle Language"
             >
               <div className="w-full flex justify-between px-1.5 text-[10px] font-bold text-slate-400 z-0">
@@ -683,7 +752,7 @@ export default function App() {
 
           <button 
             onClick={() => scrollTo('about')}
-            className="animate-bounce p-2 rounded-full border border-amber-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-400 transition-colors"
+            className="animate-bounce p-2 rounded-full border border-amber-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-400 transition-colors mt-10"
           >
             <ChevronDown className="w-6 h-6" />
           </button>
@@ -718,6 +787,23 @@ export default function App() {
                     >
                       {skill}
                     </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* 🗣️ SECCIÓN: IDIOMAS */} {/* NEW SECTION */}
+              <div className="mt-10">
+                <h4 className="text-xl font-semibold text-blue-950 dark:text-slate-200 mb-6 flex items-center gap-2">
+                  <Globe className="w-5 h-5 text-amber-500 dark:text-cyan-400" /> {t.sections.languages}
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+                  {data.languages.map((lang, index) => (
+                    <LanguageProgressBar
+                      key={lang.name} // Use name as key for uniqueness
+                      name={lang.name}
+                      level={lang.level}
+                      delay={index * 200} // Stagger animation
+                    />
                   ))}
                 </div>
               </div>
