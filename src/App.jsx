@@ -44,42 +44,48 @@ const CV_DATA = {
         role: "Frontend Web Developer",
         company: "Indegene (Spain)",
         period: "07/2024 - Present",
-        description: "Website and project management in AEM environment, content creation and modification, and web maintenance. Manual testing and work under Scrum and Kanban methodologies."
+        description: "Website and project management in AEM environment, content creation and modification, and web maintenance.",
+        fullDescription: "Detailed management of web projects using Adobe Experience Manager. Responsible for creating and modifying content, ensuring quality through manual testing, and applying agile methodologies like Scrum and Kanban for efficient workflow."
       },
       {
         id: 2,
         role: "Frontend Web Developer",
         company: "Inired (Valencia, Spain)",
         period: "11/2022 - 07/2024",
-        description: "Creation of components and functionality in React. Use of Postman and execution of manual tests under Scrum methodology."
+        description: "Creation of components and functionality in React. Use of Postman and execution of manual tests.",
+        fullDescription: "Focused on developing reusable and efficient components with React. Utilized Postman for API testing and performed rigorous manual tests to ensure application stability, all within a Scrum development cycle."
       },
       {
         id: 3,
         role: "Frontend Web Developer",
         company: "MRM (Buenos Aires, Argentina)",
         period: "08/2021 - 05/2022",
-        description: "Content administration and management in AEM. Styling and creation of components for Chevrolet using ReactJS, Node.js, Sass, and Bootstrap."
+        description: "Content administration in AEM and component creation for Chevrolet using ReactJS, Node.js, and Sass.",
+        fullDescription: "Handled content management tasks within AEM and developed new frontend components for the Chevrolet brand. My tech stack included ReactJS for interactivity, Node.js for server-side logic, and Sass/Bootstrap for styling."
       },
       {
         id: 4,
         role: "Frontend Web Developer",
         company: "Bp4 (Buenos Aires, Argentina)",
         period: "06/2021 - 08/2021",
-        description: "Administration, content management via AEM, and maintenance for the Banco Galicia site."
+        description: "Administration, content management via AEM, and maintenance for the Banco Galicia site.",
+        fullDescription: "Responsible for the administration and content updates on the Banco Galicia website through Adobe Experience Manager, ensuring the site's content was always up-to-date and functioning correctly."
       },
       {
         id: 5,
         role: "Frontend Web Developer",
         company: "Wunderman Thompson (Buenos Aires)",
         period: "10/2018 - 05/2021",
-        description: "Content administration and management in AEM, creation and styling of web components for Colgate using Drupal, Node.js, Sass, and Material."
+        description: "Content management in AEM and web component creation for Colgate using Drupal, Node.js, and Sass.",
+        fullDescription: "Managed content within AEM and was in charge of creating and styling web components for Colgate. This role involved working with a diverse stack including Drupal, Node.js, Sass, and Material Design principles."
       },
       {
         id: 6,
         role: "Web Designer/Developer",
         company: "Ekooo Design C.A / MTD Arte y Diseño",
         period: "03/2013 - 02/2018",
-        description: "Template creation, structure and style development with Bootstrap, Sass, JavaScript, and Drupal. Quality control and deadline management under Kanban and Scrum."
+        description: "Template creation, style development with Bootstrap and Sass, and quality control under Kanban and Scrum.",
+        fullDescription: "A comprehensive role that included creating web templates from scratch, developing structure and styles with Bootstrap, Sass, and JavaScript, and working with Drupal. I was also responsible for quality control and managing deadlines using both Kanban and Scrum frameworks."
       }
     ],
     education: [
@@ -198,42 +204,48 @@ const CV_DATA = {
         role: "Desarrollador Web Frontend",
         company: "Indegene (España)",
         period: "07/2024 - Presente",
-        description: "Gestión de sitios y proyectos web en entorno AEM, creación y modificación de contenido, y mantenimiento web. Pruebas manuales y trabajo bajo metodologías Scrum y Kanban."
+        description: "Gestión de sitios y proyectos web en entorno AEM, creación y modificación de contenido, y mantenimiento web.",
+        fullDescription: "Gestión detallada de proyectos web con Adobe Experience Manager. Responsable de la creación y modificación de contenido, asegurando la calidad mediante pruebas manuales y aplicando metodologías ágiles como Scrum y Kanban para un flujo de trabajo eficiente."
       },
       {
         id: 2,
         role: "Desarrollador Web Frontend",
         company: "Inired (Valencia, España)",
         period: "11/2022 - 07/2024",
-        description: "Creación de componentes y funcionalidad en React. Uso de Postman y ejecución de pruebas manuales bajo metodología Scrum."
+        description: "Creación de componentes y funcionalidad en React. Uso de Postman y ejecución de pruebas manuales.",
+        fullDescription: "Enfocado en el desarrollo de componentes reutilizables y eficientes con React. Utilicé Postman para pruebas de API y realicé rigurosas pruebas manuales para garantizar la estabilidad de la aplicación, todo dentro de un ciclo de desarrollo Scrum."
       },
       {
         id: 3,
         role: "Desarrollador Web Frontend",
         company: "MRM (Buenos Aires, Argentina)",
         period: "08/2021 - 05/2022",
-        description: "Administración y gestión de contenido en AEM. Estilización y creación de componentes para Chevrolet utilizando ReactJS, Node.js, Sass y Bootstrap."
+        description: "Administración de contenido en AEM y creación de componentes para Chevrolet con ReactJS, Node.js y Sass.",
+        fullDescription: "Realicé tareas de gestión de contenido en AEM y desarrollé nuevos componentes frontend para la marca Chevrolet. Mi stack tecnológico incluía ReactJS para la interactividad, Node.js para la lógica del servidor y Sass/Bootstrap para los estilos."
       },
       {
         id: 4,
         role: "Desarrollador Web Frontend",
         company: "Bp4 (Buenos Aires, Argentina)",
         period: "06/2021 - 08/2021",
-        description: "Administración, gestión de contenido mediante AEM y mantenimiento para el sitio del Banco Galicia."
+        description: "Administración, gestión de contenido mediante AEM y mantenimiento para el sitio del Banco Galicia.",
+        fullDescription: "Responsable de la administración y actualización de contenido en el sitio web del Banco Galicia a través de Adobe Experience Manager, asegurando que el contenido del sitio estuviera siempre actualizado y funcionando correctamente."
       },
       {
         id: 5,
         role: "Desarrollador Web Frontend",
         company: "Wunderman Thompson (Buenos Aires)",
         period: "10/2018 - 05/2021",
-        description: "Administración y gestión de contenido en AEM, creación y estilado de componentes web para Colgate usando Drupal, Node.js, Sass y Material."
+        description: "Gestión de contenido en AEM y creación de componentes web para Colgate usando Drupal, Node.js y Sass.",
+        fullDescription: "Gestioné contenido dentro de AEM y estuve a cargo de la creación y estilizado de componentes web para Colgate. Este rol implicó trabajar con un stack diverso que incluía Drupal, Node.js, Sass y principios de Material Design."
       },
       {
         id: 6,
         role: "Diseñador/Desarrollador Web",
         company: "Ekooo Design C.A / MTD Arte y Diseño",
         period: "03/2013 - 02/2018",
-        description: "Creación de plantillas, desarrollo de estructura y estilos con Bootstrap, Sass, JavaScript y Drupal. Control de calidad y gestión de fechas límite bajo Kanban y Scrum."
+        description: "Creación de plantillas, desarrollo de estilos con Bootstrap y Sass, y control de calidad bajo Kanban y Scrum.",
+        fullDescription: "Un rol integral que incluyó la creación de plantillas web desde cero, el desarrollo de la estructura y los estilos con Bootstrap, Sass y JavaScript, y el trabajo con Drupal. También fui responsable del control de calidad y la gestión de plazos utilizando los marcos de trabajo Kanban y Scrum."
       }
     ],
     education: [
@@ -580,6 +592,7 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [currentProjectIndex, setCurrentProjectIndex] = useState(0);
+  const [expandedExperience, setExpandedExperience] = useState(null); // NEW: State for expanded experience
   const carouselRef = useRef(null);
   
   const data = CV_DATA[language];
@@ -653,6 +666,11 @@ export default function App() {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
+  };
+
+  // NEW: Toggle for experience items
+  const toggleExperience = (id) => {
+    setExpandedExperience(expandedExperience === id ? null : id);
   };
 
   return (
@@ -832,13 +850,26 @@ export default function App() {
                     <div className="hidden md:block md:w-[45%]"></div>
 
                     {/* Card */}
-                    <div className="md:w-[45%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-amber-200 dark:border-slate-800 rounded-xl p-8 hover:border-blue-400/50 dark:hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-amber-900/5 dark:shadow-cyan-900/10">
-                      <span className="inline-block px-3 py-1 bg-amber-100 dark:bg-cyan-950/30 text-amber-700 dark:text-cyan-400 border border-amber-200 dark:border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
-                      <h5 className="text-xl font-bold text-blue-950 dark:text-slate-100 mb-2">{job.role}</h5>
-                      <h6 className="text-blue-800 dark:text-slate-400 font-medium mb-4 flex items-center gap-2">
-                        <Briefcase className="w-4 h-4" /> {job.company}
-                      </h6>
-                      <p className="text-slate-600 dark:text-slate-500 text-sm leading-relaxed">{job.description}</p>
+                    <div 
+                      className="md:w-[45%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-amber-200 dark:border-slate-800 rounded-xl p-6 md:p-8 hover:border-blue-400/50 dark:hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-amber-900/5 dark:shadow-cyan-900/10 cursor-pointer"
+                      onClick={() => toggleExperience(job.id)}
+                    >
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <span className="inline-block px-3 py-1 bg-amber-100 dark:bg-cyan-950/30 text-amber-700 dark:text-cyan-400 border border-amber-200 dark:border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
+                          <h5 className="text-xl font-bold text-blue-950 dark:text-slate-100 mb-2">{job.role}</h5>
+                          <h6 className="text-blue-800 dark:text-slate-400 font-medium mb-4 flex items-center gap-2">
+                            <Briefcase className="w-4 h-4" /> {job.company}
+                          </h6>
+                        </div>
+                        <ChevronDown className={`w-5 h-5 text-slate-500 dark:text-slate-400 transition-transform duration-300 shrink-0 mt-1 ${expandedExperience === job.id ? 'rotate-180' : ''}`} />
+                      </div>
+                      <p className="text-slate-600 dark:text-slate-500 text-sm leading-relaxed mb-4">{job.description}</p>
+                      <div className={`grid transition-all duration-500 ease-in-out ${expandedExperience === job.id ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                        <div className="overflow-hidden">
+                          <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed pt-4 border-t border-amber-100 dark:border-slate-800">{job.fullDescription}</p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </FadeInSection>
