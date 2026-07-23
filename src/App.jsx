@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  motion, 
   Github, 
   Linkedin, 
   Mail, 
@@ -418,6 +417,37 @@ const Typewriter = ({ text, delay = 100, eraseDelay = 50, pauseTime = 2000 }) =>
   );
 };
 
+// Componente para animaciones de entrada fluidas (Alto rendimiento)
+const FadeInSection = ({ children, delay = 0, className = "" }) => {
+  const [isVisible, setVisible] = useState(false);
+  const domRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    const currentRef = domRef.current;
+    if (currentRef) observer.observe(currentRef);
+    return () => { if (currentRef) observer.unobserve(currentRef); };
+  }, []);
+
+  return (
+    <div
+      ref={domRef}
+      className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-12'} ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
 // Modal de Proyectos con Carrusel
 const ProjectModal = ({ project, onClose, language }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -445,12 +475,12 @@ const ProjectModal = ({ project, onClose, language }) => {
   const prevImage = () => setCurrentImageIndex((prev) => (prev - 1 + project.images.length) % project.images.length);
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" onClick={onClose}>
-      <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} className="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]" onClick={e => e.stopPropagation()}>
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} role="dialog" aria-modal="true">
+      <div className="relative w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-all duration-300" onClick={e => e.stopPropagation()}>
         {/* Encabezado del Modal */}
-        <div className="flex justify-between items-center p-6 border-b border-amber-100 dark:border-slate-800">
+        <div className="flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800">
           <h3 className="text-2xl font-bold text-blue-950 dark:text-slate-100">{project.title}</h3>
-          <button onClick={onClose} aria-label="Cerrar modal" className="p-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-amber-50 dark:hover:bg-slate-800 rounded-full transition-colors">
+          <button onClick={onClose} aria-label="Cerrar modal" className="p-2 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -458,19 +488,19 @@ const ProjectModal = ({ project, onClose, language }) => {
         {/* Contenido scrolleable */}
         <div className="overflow-y-auto p-6 space-y-8">
           {/* Carrusel de imágenes */}
-          <div className="relative group rounded-xl overflow-hidden bg-amber-50 dark:bg-slate-800 aspect-video flex items-center justify-center">
-            <motion.img key={currentImageIndex} src={project.images[currentImageIndex]} alt={`Captura de ${project.title}`} className="w-full h-full object-cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }} />
+          <div className="relative group rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 aspect-video flex items-center justify-center">
+            <img key={currentImageIndex} src={project.images[currentImageIndex]} alt={`Captura de ${project.title}`} className="w-full h-full object-cover transition-opacity duration-500" />
             {project.images.length > 1 && (
               <>
-                <button onClick={prevImage} aria-label="Imagen anterior" className="absolute left-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600 dark:hover:bg-cyan-600 backdrop-blur-sm">
+                <button onClick={prevImage} aria-label="Imagen anterior" className="absolute left-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-sky-600 dark:hover:bg-cyan-600 backdrop-blur-sm">
                   <ChevronLeft className="w-6 h-6" />
                 </button>
-                <button onClick={nextImage} aria-label="Siguiente imagen" className="absolute right-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-blue-600 dark:hover:bg-cyan-600 backdrop-blur-sm">
+                <button onClick={nextImage} aria-label="Siguiente imagen" className="absolute right-4 p-2 bg-slate-950/60 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-sky-600 dark:hover:bg-cyan-600 backdrop-blur-sm">
                   <ChevronRight className="w-6 h-6" />
                 </button>
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 bg-slate-950/40 px-3 py-2 rounded-full backdrop-blur-sm">
                   {project.images.map((_, idx) => (
-                    <button key={idx} onClick={() => setCurrentImageIndex(idx)} aria-label={`Ir a imagen ${idx + 1}`} className={`w-2 h-2 rounded-full transition-colors ${idx === currentImageIndex ? 'bg-amber-400 dark:bg-cyan-400' : 'bg-slate-400/50'}`} />
+                    <button key={idx} onClick={() => setCurrentImageIndex(idx)} aria-label={`Ir a imagen ${idx + 1}`} className={`w-2 h-2 rounded-full transition-colors ${idx === currentImageIndex ? 'bg-sky-400 dark:bg-cyan-400' : 'bg-slate-400/50'}`} />
                   ))}
                 </div>
               </>
@@ -479,11 +509,11 @@ const ProjectModal = ({ project, onClose, language }) => {
           
           {/* Descripción Extendida */}
           <div>
-            <h4 className="text-xl font-semibold text-amber-600 dark:text-cyan-400 mb-4">{t.about}</h4>
+            <h4 className="text-xl font-semibold text-sky-600 dark:text-cyan-400 mb-4">{t.about}</h4>
             <p className="text-slate-700 dark:text-slate-300 leading-relaxed mb-6 whitespace-pre-line">{project.fullDescription}</p>
             <div className="flex flex-wrap gap-2 mb-6">
               {project.tags.map(tag => (
-                <span key={tag} className="px-3 py-1 bg-amber-50 dark:bg-slate-800 text-blue-800 dark:text-slate-300 rounded-full text-sm border border-amber-200 dark:border-slate-700">{tag}</span>
+                <span key={tag} className="px-3 py-1 bg-sky-50 dark:bg-slate-800 text-sky-800 dark:text-slate-300 rounded-full text-sm border border-sky-200 dark:border-slate-700">{tag}</span>
               ))}
             </div>
             {project.link !== '#' && (
@@ -493,7 +523,7 @@ const ProjectModal = ({ project, onClose, language }) => {
             )}
           </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
@@ -548,7 +578,7 @@ const LanguageProgressBar = ({ name, level, delay = 0 }) => {
         <span className="text-blue-900 dark:text-slate-300 font-medium">{name}</span>
         <span className="text-blue-800 dark:text-cyan-400 text-sm font-mono">{level}%</span>
       </div>
-      <div className="w-full bg-amber-100 dark:bg-slate-800 rounded-full h-2.5">
+      <div className="w-full bg-sky-100 dark:bg-slate-800 rounded-full h-2.5">
         <div
           className="bg-amber-500 dark:bg-cyan-500 h-2.5 rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${currentLevel}%` }}
@@ -575,19 +605,6 @@ export default function App() {
   const data = CV_DATA[language];
   const t = UI_TEXT[language];
 
-  // === ANIMATION VARIANTS ===
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: (i = 0) => ({
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: i * 0.1,
-        duration: 0.8,
-        ease: "easeOut"
-      }
-    })
-  };
   // Aplicar el tema al HTML principal
   useEffect(() => {
     if (theme === 'dark') {
@@ -664,10 +681,10 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBEE] dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans selection:bg-amber-200 dark:selection:bg-cyan-900 selection:text-blue-900 dark:selection:text-cyan-50 transition-colors duration-300 motion-safe:scroll-smooth">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 font-sans selection:bg-sky-200 dark:selection:bg-cyan-900 selection:text-blue-900 dark:selection:text-cyan-50 transition-colors duration-300 scroll-smooth">
 
       {/* 🧭 NAVEGACIÓN FLOTANTE */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg py-4 border-b border-amber-200 dark:border-transparent' : 'bg-transparent py-6'}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${isScrolled ? 'bg-white/90 dark:bg-slate-900/90 backdrop-blur-md shadow-lg py-4 border-b border-slate-200 dark:border-transparent' : 'bg-transparent py-6'}`}>
         <div className="container mx-auto px-6 md:px-12 flex justify-between items-center">
           <div className="text-xl font-bold bg-gradient-to-r from-amber-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500 bg-clip-text text-transparent cursor-pointer" onClick={() => scrollTo('home')}>
             {data.personal.name.split(' ')[0]}<span className="text-blue-900 dark:text-slate-200">.dev</span>
@@ -677,7 +694,7 @@ export default function App() {
             {/* 🌙/☀️ SWITCH DE TEMA */}
             <button
               onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-amber-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-cyan-800 transition-all shadow-inner"
+              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-slate-300 dark:border-slate-700 hover:border-sky-400 dark:hover:border-cyan-800 transition-all shadow-inner"
               aria-label="Toggle Theme"
             >
               <div className="w-full flex justify-between px-1.5 text-[10px] font-bold text-slate-400 z-0">
@@ -687,8 +704,8 @@ export default function App() {
               <div 
                 className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full transition-transform duration-300 flex items-center justify-center text-[10px] font-bold z-10 ${
                   theme === 'light' 
-                    ? 'translate-x-7 bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.5)] text-blue-950' 
-                    : 'translate-x-0 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.5)] text-slate-950'
+                    ? 'translate-x-7 bg-sky-400 shadow-[0_0_10px_rgba(56,189,248,0.5)] text-blue-950' 
+                    : 'translate-x-0 bg-cyan-400 shadow-[0_0_10px_rgba(34,211,238,0.4)] text-slate-950'
                 }`}
               >
                 {theme === 'light' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -698,7 +715,7 @@ export default function App() {
             {/* 🇬🇧/🇪🇸 SWITCH DE IDIOMA */}
             <button
               onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
-              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-amber-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-cyan-800 transition-all shadow-inner ml-2"
+              className="relative w-14 h-7 flex items-center bg-white dark:bg-slate-900 rounded-full p-1 cursor-pointer border border-slate-300 dark:border-slate-700 hover:border-sky-400 dark:hover:border-cyan-800 transition-all shadow-inner ml-2"
               aria-label="Toggle Language"
             >
               <div className="w-full flex justify-between px-1.5 text-[10px] font-bold text-slate-400 z-0">
@@ -708,7 +725,7 @@ export default function App() {
               <div 
                 className={`absolute top-0.5 left-0.5 w-6 h-6 rounded-full transition-transform duration-300 flex items-center justify-center text-[10px] font-bold z-10 ${
                   language === 'es' ? 'translate-x-7' : 'translate-x-0'
-                } ${theme === 'light' ? 'bg-amber-400 text-blue-950 shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 'bg-cyan-400 text-slate-950 shadow-[0_0_10px_rgba(34,211,238,0.5)]'}`}
+                } ${theme === 'light' ? 'bg-sky-400 text-blue-950 shadow-[0_0_10px_rgba(56,189,248,0.5)]' : 'bg-cyan-400 text-slate-950 shadow-[0_0_10px_rgba(34,211,238,0.4)]'}`}
               >
                 {language.toUpperCase()}
               </div>
@@ -733,88 +750,82 @@ export default function App() {
         
         {/* 🌟 SECCIÓN: INICIO (HERO) */}
         <section id="home" className="min-h-[80vh] flex flex-col justify-center items-start pt-10">
-          <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
-            <motion.p variants={sectionVariants} className="text-amber-600 dark:text-cyan-400 font-mono mb-4 pl-1">{t.hero.greeting}</motion.p>
-            <motion.h1 variants={sectionVariants} className="text-5xl md:text-7xl font-bold text-blue-950 dark:text-slate-100 mb-4 tracking-tight">
+          <FadeInSection>
+            <p className="text-sky-600 dark:text-cyan-400 font-mono mb-4 pl-1">{t.hero.greeting}</p>
+            <h1 className="text-5xl md:text-7xl font-bold text-blue-950 dark:text-slate-100 mb-4 tracking-tight">
               {data.personal.name}.
-            </motion.h1>
-            <motion.h2 variants={sectionVariants} className="text-4xl md:text-6xl font-ligth text-blue-900 dark:text-white font-mono mb-8">
+            </h1>
+            <h2 className="text-4xl md:text-6xl font-ligth text-blue-900 dark:text-white font-mono mb-8">
               <Typewriter text={`${t.hero.rolePrefix}${data.personal.role}.`} delay={80} />
-            </motion.h2>
-            <motion.p variants={sectionVariants} className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-12 leading-relaxed">
+            </h2>
+            <p className="text-lg text-slate-600 dark:text-slate-400 max-w-2xl mb-12 leading-relaxed">
               {data.personal.about.substring(0, 150)}... 
-            </motion.p>
+            </p>
             
-            <motion.div variants={sectionVariants} className="flex gap-4 mb-16">
+            <div className="flex gap-4 mb-16">
               {[
                 { icon: Github, url: data.personal.github },
                 { icon: Linkedin, url: data.personal.linkedin },
                 { icon: Mail, url: `mailto:${data.personal.email}` }
               ].map((social, idx) => (
-                <motion.a 
+                <a 
                   key={idx} 
                   href={social.url} 
                   target="_blank" 
                   rel="noreferrer" 
-                  className="p-3 bg-white dark:bg-slate-800 text-blue-800 dark:text-slate-300 rounded-full border border-amber-200 dark:border-transparent hover:bg-amber-100 dark:hover:bg-cyan-900 hover:text-blue-700 dark:hover:text-cyan-400 transition-all hover:shadow-lg hover:shadow-amber-500/20 dark:hover:shadow-cyan-900/20"
-                  whileHover={{ y: -4, scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  className="p-3 bg-white dark:bg-slate-800 text-blue-800 dark:text-slate-300 rounded-full border border-slate-200 dark:border-transparent hover:bg-sky-100 dark:hover:bg-cyan-900 hover:text-sky-700 dark:hover:text-cyan-400 transition-all hover:-translate-y-1 hover:shadow-lg hover:shadow-sky-500/20 dark:hover:shadow-cyan-900/20"
                 >
                   <social.icon className="w-6 h-6" />
-                </motion.a>
+                </a>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </FadeInSection>
 
-          <motion.button 
+          <button 
             onClick={() => scrollTo('about')}
-            className="p-2 rounded-full border border-amber-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-400 transition-colors mt-10"
-            animate={{ y: [0, 10, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="animate-bounce p-2 rounded-full border border-slate-300 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-400 hover:border-sky-400 dark:hover:border-cyan-400 transition-colors mt-10"
           >
             <ChevronDown className="w-6 h-6" />
-          </motion.button>
+          </button>
         </section>
 
         {/* 👤 SECCIÓN: SOBRE MÍ & SKILLS */}
         <section id="about" className="scroll-mt-32">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.3 }} variants={sectionVariants}>
+          <FadeInSection>
             <div className="flex items-center gap-4 mb-12">
-              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">01.</span> {t.sections.about}</h3>
-              <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
+              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-sky-600 dark:text-cyan-400 font-mono text-xl mr-2">01.</span> {t.sections.about}</h3>
+              <div className="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
             </div>
             
             <div className="w-full">
               <div className="space-y-6 text-slate-700 dark:text-slate-400 leading-relaxed text-lg mb-10">
                 <p>{data.personal.about}</p>
-                <div className="flex items-center gap-2 text-blue-900 dark:text-slate-300 bg-white dark:bg-slate-900 w-fit px-5 py-3 rounded-lg border border-amber-200 dark:border-slate-800 shadow-sm">
-                  <MapPin className="w-5 h-5 text-amber-500 dark:text-cyan-400" />
+                <div className="flex items-center gap-2 text-blue-900 dark:text-slate-300 bg-white dark:bg-slate-900 w-fit px-5 py-3 rounded-lg border border-slate-200 dark:border-slate-800 shadow-sm">
+                  <MapPin className="w-5 h-5 text-sky-500 dark:text-cyan-400" />
                   <span>{data.personal.location}</span>
                 </div>
               </div>
               
               <div>
                 <h4 className="text-xl font-semibold text-blue-950 dark:text-slate-200 mb-6 flex items-center gap-2">
-                  <Code2 className="w-5 h-5 text-amber-500 dark:text-cyan-400" /> {t.sections.skills}
+                  <Code2 className="w-5 h-5 text-sky-500 dark:text-cyan-400" /> {t.sections.skills}
                 </h4>
-                <motion.div className="flex flex-wrap gap-3" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ visible: { transition: { staggerChildren: 0.05 } } }}>
+                <div className="flex flex-wrap gap-3">
                   {data.skills.map((skill, index) => (
-                    <motion.span 
+                    <span 
                       key={index} 
-                      className="px-4 py-2 bg-white dark:bg-slate-800/50 text-blue-800 dark:text-slate-300 rounded-lg border border-amber-200 dark:border-slate-700/50 text-sm font-medium cursor-default shadow-sm"
-                      variants={sectionVariants}
-                      whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                      className="px-4 py-2 bg-white dark:bg-slate-800/50 text-blue-800 dark:text-slate-300 rounded-lg border border-slate-200 dark:border-slate-700/50 text-sm font-medium hover:bg-sky-50 dark:hover:bg-cyan-950/50 hover:border-sky-400 dark:hover:border-cyan-500/50 hover:text-sky-700 dark:hover:text-cyan-300 hover:-translate-y-1 transition-all duration-300 cursor-default shadow-sm hover:shadow-md"
                     >
                       {skill}
-                    </motion.span>
+                    </span>
                   ))}
-                </motion.div>
+                </div>
               </div>
 
               {/* 🗣️ SECCIÓN: IDIOMAS */} {/* NEW SECTION */}
               <div className="mt-10">
                 <h4 className="text-xl font-semibold text-blue-950 dark:text-slate-200 mb-6 flex items-center gap-2">
-                  <Globe className="w-5 h-5 text-amber-500 dark:text-cyan-400" /> {t.sections.languages}
+                  <Globe className="w-5 h-5 text-sky-500 dark:text-cyan-400" /> {t.sections.languages}
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                   {data.languages.map((lang, index) => (
@@ -828,23 +839,23 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </FadeInSection>
         </section>
 
         {/* 💼 SECCIÓN: EXPERIENCIA LABORAL */}
         <section id="experience" className="scroll-mt-32">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-            <motion.div variants={sectionVariants} className="flex items-center gap-4 mb-16">
-              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">02.</span> {t.sections.experience}</h3>
-              <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
-            </motion.div>
+          <FadeInSection>
+            <div className="flex items-center gap-4 mb-16">
+              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-sky-600 dark:text-cyan-400 font-mono text-xl mr-2">02.</span> {t.sections.experience}</h3>
+              <div className="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
+            </div>
 
-            <div className="max-w-4xl mx-auto space-y-12 relative before:absolute before:top-0 before:bottom-0 before:left-5 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-amber-300/60 dark:before:from-cyan-500/20 before:via-amber-300/60 dark:before:via-cyan-500/20 before:to-transparent">
+            <div className="max-w-4xl mx-auto space-y-12 relative before:absolute before:top-0 before:bottom-0 before:left-5 md:before:left-1/2 before:-ml-px before:w-0.5 before:bg-gradient-to-b before:from-sky-300/60 dark:before:from-cyan-500/20 before:via-sky-300/60 dark:before:via-cyan-500/20 before:to-transparent">
               {data.experience.map((job, index) => (
-                <motion.div key={job.id} custom={index} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariants}>
+                <FadeInSection key={job.id} delay={index * 150}>
                   <div className={`relative pl-16 md:pl-0 group md:flex md:justify-between md:items-center w-full ${index % 2 === 0 ? 'md:flex-row-reverse' : ''}`}>
                     {/* Timeline Dot */}
-                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 md:top-1/2 md:-translate-y-1/2 w-10 h-10 bg-[#FDFBEE] dark:bg-slate-950 border-2 border-amber-300 dark:border-slate-800 rounded-full flex items-center justify-center group-hover:border-blue-500 dark:group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.3)] dark:group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
+                    <div className="absolute left-0 md:left-1/2 md:-translate-x-1/2 top-1 md:top-1/2 md:-translate-y-1/2 w-10 h-10 bg-slate-50 dark:bg-slate-950 border-2 border-sky-300 dark:border-slate-800 rounded-full flex items-center justify-center group-hover:border-sky-500 dark:group-hover:border-cyan-400 group-hover:shadow-[0_0_15px_rgba(14,165,233,0.3)] dark:group-hover:shadow-[0_0_15px_rgba(34,211,238,0.4)] transition-all z-10 duration-500">
                       <div className="w-3 h-3 bg-blue-500 dark:bg-cyan-400 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
                     </div>
                     
@@ -852,15 +863,14 @@ export default function App() {
                     <div className="hidden md:block md:w-[45%]"></div>
 
                     {/* Card */}
-                    <motion.div 
-                      className="md:w-[45%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-amber-200 dark:border-slate-800 rounded-xl p-6 md:p-8 transition-all duration-300 shadow-lg shadow-amber-900/5 dark:shadow-cyan-900/10 cursor-pointer"
+                    <div 
+                      className="md:w-[45%] bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border border-slate-200 dark:border-slate-800 rounded-xl p-6 md:p-8 hover:border-sky-400/50 dark:hover:border-cyan-800/50 transition-all duration-300 hover:-translate-y-1 shadow-lg shadow-sky-900/5 dark:shadow-cyan-900/10 cursor-pointer"
                       onClick={() => toggleExperience(job.id)}
-                      whileHover={{ y: -4, transition: { duration: 0.2 } }}
                       aria-expanded={expandedExperience === job.id}
                     >
                       <div className="flex justify-between items-start">
                         <div>
-                          <span className="inline-block px-3 py-1 bg-amber-100 dark:bg-cyan-950/30 text-amber-700 dark:text-cyan-400 border border-amber-200 dark:border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
+                          <span className="inline-block px-3 py-1 bg-sky-100 dark:bg-cyan-950/30 text-sky-700 dark:text-cyan-400 border border-sky-200 dark:border-cyan-900/30 rounded-full font-mono text-xs mb-4">{job.period}</span>
                           <h5 className="text-xl font-bold text-blue-950 dark:text-slate-100 mb-2">{job.role}</h5>
                           <h6 className="text-blue-800 dark:text-slate-400 font-medium mb-4 flex items-center gap-2">
                             <Briefcase className="w-4 h-4" /> {job.company}
@@ -871,64 +881,64 @@ export default function App() {
                       <p className="text-slate-600 dark:text-slate-500 text-sm leading-relaxed mb-4">{job.description}</p>
                       <div className={`grid transition-all duration-500 ease-in-out ${expandedExperience === job.id ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
                         <div className="overflow-hidden">
-                          <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed pt-4 border-t border-amber-100 dark:border-slate-800">{job.fullDescription}</p>
+                          <p className="text-slate-700 dark:text-slate-400 text-sm leading-relaxed pt-4 border-t border-slate-100 dark:border-slate-800">{job.fullDescription}</p>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   </div>
-                </motion.div>
+                </FadeInSection>
               ))}
             </div>
-          </motion.div>
+          </FadeInSection>
         </section>
 
         {/* 🎓 SECCIÓN: FORMACIÓN ACADÉMICA */}
         <section id="education" className="scroll-mt-32">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-            <motion.div variants={sectionVariants} className="flex items-center gap-4 mb-12">
-              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">03.</span> {t.sections.education}</h3>
-              <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
-            </motion.div>
+          <FadeInSection>
+            <div className="flex items-center gap-4 mb-12">
+              <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-sky-600 dark:text-cyan-400 font-mono text-xl mr-2">03.</span> {t.sections.education}</h3>
+              <div className="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
+            </div>
 
-        <motion.div className="grid grid-cols-1 md:grid-cols-6 gap-6" initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={{ visible: { transition: { staggerChildren: 0.1 } } }}>
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
               {data.education.map((edu, index) => (
-            <motion.div key={edu.id} variants={sectionVariants} className={`h-full ${index < 2 ? 'md:col-span-3' : 'md:col-span-2'}`}>
-                  <motion.div whileHover={{ y: -8, transition: { duration: 0.3 } }} className="h-full bg-gradient-to-br from-white to-amber-50/50 dark:from-slate-900 dark:to-slate-950 border border-amber-200 dark:border-slate-800 rounded-xl p-8 transition-all duration-500 shadow-xl shadow-blue-900/10 dark:shadow-slate-900/50 group flex flex-col relative overflow-hidden">
-                    <div className="absolute -right-6 -bottom-6 text-amber-200/50 dark:text-slate-800/30 group-hover:text-blue-100 dark:group-hover:text-cyan-900/10 transition-colors duration-500 transform group-hover:-rotate-12 group-hover:scale-110">
+            <FadeInSection key={edu.id} delay={index * 150} className={`h-full ${index < 2 ? 'md:col-span-3' : 'md:col-span-2'}`}>
+                  <div className="h-full bg-gradient-to-br from-white to-sky-50/50 dark:from-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-8 hover:border-sky-300 dark:hover:border-slate-700 transition-all duration-500 hover:shadow-xl hover:shadow-sky-900/10 dark:hover:shadow-slate-900/50 hover:-translate-y-2 group flex flex-col relative overflow-hidden">
+                    <div className="absolute -right-6 -bottom-6 text-sky-200/50 dark:text-slate-800/30 group-hover:text-sky-100 dark:group-hover:text-cyan-900/10 transition-colors duration-500 transform group-hover:-rotate-12 group-hover:scale-110">
                       <GraduationCap className="w-32 h-32" />
                     </div>
                     <div className="relative z-10 flex flex-col h-full">
-                      <span className="text-amber-600 dark:text-cyan-400 font-mono text-sm mb-4 block">{edu.period}</span>
+                      <span className="text-sky-600 dark:text-cyan-400 font-mono text-sm mb-4 block">{edu.period}</span>
                       <h5 className="text-lg font-bold text-blue-950 dark:text-slate-200 mb-2 leading-snug">{edu.degree}</h5>
                       <h6 className="text-blue-800 dark:text-slate-400 mb-4 text-sm font-medium">{edu.institution}</h6>
                       <p className="text-slate-600 dark:text-slate-500 text-sm leading-relaxed mt-auto">{edu.description}</p>
                     </div>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </FadeInSection>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </FadeInSection>
         </section>
 
         {/* 🚀 SECCIÓN: PROYECTOS */}
         <section id="projects" className="scroll-mt-32">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }} variants={sectionVariants}>
-            <motion.div variants={sectionVariants} className="flex items-center justify-between gap-4 mb-12">
+          <FadeInSection>
+            <div className="flex items-center justify-between gap-4 mb-12">
               <div className="flex items-center gap-4 flex-grow">
-                <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-amber-600 dark:text-cyan-400 font-mono text-xl mr-2">04.</span> {t.sections.projects}</h3>
-                <div className="h-px bg-amber-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
+                <h3 className="text-3xl font-bold text-blue-950 dark:text-slate-100"><span className="text-sky-600 dark:text-cyan-400 font-mono text-xl mr-2">04.</span> {t.sections.projects}</h3>
+                <div className="h-px bg-slate-200 dark:bg-slate-800 flex-grow max-w-xs"></div>
               </div>
               
               {/* Controles del Carrusel (Desktop) */}
               <div className="hidden md:flex gap-3">
-                <button onClick={() => scrollCarousel('left')} aria-label="Proyecto anterior" className="p-3 bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-full text-blue-800 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-800 hover:bg-amber-50 dark:hover:bg-slate-800 transition-all">
+                <button onClick={() => scrollCarousel('left')} aria-label="Proyecto anterior" className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-blue-800 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-400 hover:border-sky-400 dark:hover:border-cyan-800 hover:bg-sky-50 dark:hover:bg-slate-800 transition-all">
                   <ChevronLeft className="w-5 h-5" />
                 </button>
-                <button onClick={() => scrollCarousel('right')} aria-label="Siguiente proyecto" className="p-3 bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-full text-blue-800 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 hover:border-blue-400 dark:hover:border-cyan-800 hover:bg-amber-50 dark:hover:bg-slate-800 transition-all">
+                <button onClick={() => scrollCarousel('right')} aria-label="Siguiente proyecto" className="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full text-blue-800 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cyan-400 hover:border-sky-400 dark:hover:border-cyan-800 hover:bg-sky-50 dark:hover:bg-slate-800 transition-all">
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
-            </motion.div>
+            </div>
 
             {/* Contenedor del Carrusel */}
             <div 
@@ -937,8 +947,8 @@ export default function App() {
               className="flex gap-6 overflow-x-auto pb-8 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] scroll-smooth"
             >
               {data.projects.map((project, index) => (
-                <motion.div key={project.id} custom={index} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }} variants={sectionVariants} className="snap-center shrink-0 w-[85vw] md:w-[calc(50%-12px)] flex flex-col">
-                  <motion.div whileHover={{ y: -8, transition: { duration: 0.3 } }} className="bg-white dark:bg-slate-900 border border-amber-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col flex-grow shadow-lg shadow-blue-900/10 dark:shadow-cyan-900/20 transition-all duration-500 group">
+                <FadeInSection key={project.id} delay={index * 150} className="snap-center shrink-0 w-[85vw] md:w-[calc(50%-12px)] flex flex-col">
+                  <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col flex-grow hover:border-sky-400 dark:hover:border-cyan-900/60 hover:shadow-lg hover:shadow-sky-900/10 dark:hover:shadow-cyan-900/20 transition-all duration-500 group">
                     {/* Imagen de Portada */}
                     <div className="h-56 overflow-hidden relative">
                       <img src={project.cover} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -954,7 +964,7 @@ export default function App() {
                       
                       <div className="flex flex-wrap gap-2 mb-8">
                         {project.tags.slice(0, 4).map((tag, i) => (
-                          <span key={i} className="text-xs font-mono text-blue-700 dark:text-cyan-400/80 bg-amber-50 dark:bg-cyan-950/30 border border-amber-200 dark:border-cyan-900/30 px-2 py-1 rounded">
+                          <span key={i} className="text-xs font-mono text-sky-700 dark:text-cyan-400/80 bg-sky-50 dark:bg-cyan-950/30 border border-sky-200 dark:border-cyan-900/30 px-2 py-1 rounded">
                             {tag}
                           </span>
                         ))}
@@ -962,13 +972,13 @@ export default function App() {
 
                       <button 
                         onClick={() => setSelectedProject(project)}
-                        className="w-full py-3 px-4 bg-amber-50 dark:bg-slate-800/50 hover:bg-blue-50 dark:hover:bg-cyan-900/30 text-blue-900 dark:text-slate-200 hover:text-blue-700 dark:hover:text-cyan-300 font-medium rounded-lg border border-amber-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-cyan-800 transition-all duration-300 flex items-center justify-center gap-2 mt-auto hover:shadow-md hover:shadow-blue-900/10 dark:hover:shadow-cyan-900/20"
+                        className="w-full py-3 px-4 bg-sky-50 dark:bg-slate-800/50 hover:bg-sky-100 dark:hover:bg-cyan-900/30 text-blue-900 dark:text-slate-200 hover:text-sky-700 dark:hover:text-cyan-300 font-medium rounded-lg border border-slate-200 dark:border-slate-700 hover:border-sky-300 dark:hover:border-cyan-800 transition-all duration-300 flex items-center justify-center gap-2 mt-auto hover:shadow-md hover:shadow-sky-900/10 dark:hover:shadow-cyan-900/20"
                       >
                         {t.project.details}
                       </button>
                     </div>
-                  </motion.div>
-                </motion.div>
+                  </div>
+                </FadeInSection>
               ))}
             </div>
 
@@ -981,7 +991,7 @@ export default function App() {
                   className={`transition-all duration-300 rounded-full h-2.5 ${
                     index === currentProjectIndex 
                       ? 'w-8 bg-amber-500 dark:bg-cyan-400 shadow-[0_0_10px_rgba(245,158,11,0.5)] dark:shadow-[0_0_10px_rgba(34,211,238,0.5)]' 
-                      : 'w-2.5 bg-amber-200 dark:bg-slate-700 hover:bg-amber-400 dark:hover:bg-slate-500'
+                      : 'w-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-sky-400 dark:hover:bg-slate-500'
                   }`}
                   aria-label={`Ir al proyecto ${index + 1}`}
                 />
@@ -995,7 +1005,7 @@ export default function App() {
               <a 
                 href="/cv-luis-hernandez.pdf" 
                 download="Luis_Hernandez_CV.pdf"
-                className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-amber-500 to-amber-600 dark:from-cyan-600 dark:to-blue-600 text-white font-bold text-lg rounded-full overflow-hidden shadow-xl shadow-amber-500/20 dark:shadow-cyan-900/30 hover:scale-105 hover:shadow-2xl transition-all duration-300 ring-2 ring-white/20 dark:ring-white/10"
+                className="group relative inline-flex items-center justify-center gap-3 px-10 py-5 bg-gradient-to-r from-sky-500 to-blue-600 dark:from-cyan-600 dark:to-blue-600 text-white font-bold text-lg rounded-full overflow-hidden shadow-xl shadow-sky-500/20 dark:shadow-cyan-900/30 hover:scale-105 hover:shadow-2xl transition-all duration-300 ring-2 ring-white/20 dark:ring-white/10"
               >
                 <div className="absolute inset-0 w-full h-full bg-white/20 group-hover:translate-x-full transition-transform duration-500 ease-out -skew-x-12 -ml-4 z-0"></div>
                 <Download className="w-6 h-6 animate-bounce z-10" />
@@ -1009,7 +1019,7 @@ export default function App() {
       </main>
 
       {/* 🏁 FOOTER */}
-      <footer className="text-center py-8 text-slate-500 dark:text-slate-500 border-t border-amber-200 dark:border-slate-800/50 bg-[#FDFBEE] dark:bg-slate-950">
+      <footer className="text-center py-8 text-slate-500 dark:text-slate-500 border-t border-slate-200 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-950">
         <p className="text-sm font-mono">
           {t.footer.built}
         </p>
